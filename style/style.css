@@ -1,0 +1,56 @@
+
+html {
+    box-sizing: border-box;
+  }
+  *, *:before, *:after {
+    box-sizing: inherit;
+}
+body,html {
+    height: 100%;
+}
+
+.banner {
+    max-width: 1200px;
+    margin: auto;
+    position: relative;
+}
+
+.container-img {
+    border: 1px solid red;
+    width: 170px;
+    border: 3px solid white;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+.imagenPerfil {
+    width: 170px;
+    height: 170px;
+    border-radius: 50%;
+    border: 5px solid white;
+    position: relative;
+    top: -96px;
+   
+}
+
+.imagenBanner  {
+  width: 100%;
+  height: 477px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.wrapper {
+    max-height: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
+}
+
+.wrapper-imagen {
+    display: flex;
+    justify-content: flex-start;
+    padding-left: 40px;
+}

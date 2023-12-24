@@ -1,0 +1,29 @@
+
+@media (max-width: 1200px) {
+    .imagenBanner {
+        height: 400px;
+    }
+}
+
+@media (max-width: 992px) {
+    .imagenBanner {
+        height: 340px;
+    }
+}
+
+@media (max-width: 768px) {
+    .imagenBanner {
+        height: 290px;
+    }
+   .wrapper-imagen {
+    justify-content: center;
+    padding-left: 0px;
+   }
+} 
+
+@media (max-width: 480px) {
+    .imagenBanner {
+        height: 190px;
+    }
+}
+
