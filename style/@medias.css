@@ -1,7 +1,7 @@
 
 @media (max-width: 1200px) {
     .imagenBanner {
-        height: 400px;
+        height: 340px;
     }
 }
 
@@ -15,15 +15,24 @@
     .imagenBanner {
         height: 290px;
     }
-   .wrapper-imagen {
-    justify-content: center;
-    padding-left: 0px;
-   }
+    .wrapper-imagen-perfil {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding-left: 0px;
+        top: 251px;
+    }
+    .menu-list {
+        margin-top: 185px;
+    }
 } 
 
 @media (max-width: 480px) {
     .imagenBanner {
         height: 190px;
+    }
+    .wrapper-imagen-perfil {
+        top: 151px;
     }
 }
 
