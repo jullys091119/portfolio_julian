@@ -25,6 +25,16 @@
     .menu-list {
         margin-top: 185px;
     }
+
+    .wrapper-contain {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .wrapper-container-aside {
+        margin-right: 0px;
+        max-width: 100%;
+    }
 } 
 
 @media (max-width: 480px) {
