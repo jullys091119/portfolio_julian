@@ -11,7 +11,7 @@ body,html {
 
 
 .aside {
- background-color: white;
+ background-color: #F0F2F5;
  flex: 1;
 }
 
@@ -31,6 +31,12 @@ body,html {
 
 .container-list-menu {
     height: 300px;
+}
+
+.divider {
+    max-width: 400px;
+    margin: 0 auto;
+
 }
 
 img {
@@ -54,7 +60,6 @@ img {
 }
 
  .main {
-    height: 300px;
     max-width: 100%;
     margin: auto;
     display: flex;
@@ -94,6 +99,36 @@ img {
     border-radius: 1px;
 }
 
+
+.search-proyects {
+    height: 110px;
+    max-width: 470px;
+    margin: 30px auto;
+    background-color: white;
+    border-radius: 20px;
+}
+
+.search-proyects-input {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 18px;
+}
+
+.search-proyects-input input {
+    width: 338px;
+    height: 37px;
+    border: 1px solid #00000026;
+    border-radius: 12px
+}
+
+.search-proyects-avatar img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+
+}
+
 .wrapper {
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
 }
@@ -102,6 +137,7 @@ img {
     max-width: 900px;
     width: 100%;
     display: flex;
+    background-color: white;
     
 }
 .wrapper-imagen-perfil {
@@ -123,7 +159,22 @@ img {
     margin-top: 5px;
 }
 
+.wrapper-contain {
+    border: 1px solid blue;
+    padding: 30px;
+}
+
+.wrapper-container-aside {
+    border: 1px solid green;
+    height: 240px;
+    max-width: 270px;
+    margin-right: 30px;
+}
 .works {
     background-color: white;
     flex: 2;
+    height: 400px;
+    background-color: #F0F2F5;
+
+    
 }
