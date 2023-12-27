@@ -70,7 +70,6 @@ img {
     height: 170px;
     border-radius: 50%;
     border: 5px solid white;
-   
 }
 
 .imagenBanner  {
@@ -86,6 +85,7 @@ img {
     display: flex;
     justify-content: center;
     background-color: #F0F2F5;
+    min-height: 100vh;
  }
 .menu-list {
     border: 1px solid transparent;
@@ -197,6 +197,12 @@ img {
     gap: 2px; /* Espacio entre las celdas */
     background-color: white;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Posición X, Posición Y, Desenfoque, Color */
+}
+
+.wrapper-publication {
+    height: 400px;
+    background: white;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 .works {
     background-color: white;
