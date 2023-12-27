@@ -9,6 +9,37 @@
     .imagenBanner {
         height: 340px;
     }
+    .wrapper-contain {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .wrapper-container-aside {
+        max-width: 90%;
+        margin: auto;
+    }
+    .search-proyects {
+        max-width: 90%;
+        background-color: white;
+        border-radius: 9px;
+        margin: auto;
+    }
+
+    .search-proyects-input input {
+        max-width: 100%;
+        width: 100%;
+        height: 43px;
+        border: 1px solid #00000026;
+        border-radius: 23px;
+    }
+
+   .search-proyects-input {
+     justify-content: flex-start;
+   }
+
+   .filters {
+     max-width: 90%;
+   
+    }
 }
 
 @media (max-width: 768px) {
@@ -25,15 +56,9 @@
     .menu-list {
         margin-top: 185px;
     }
-
-    .wrapper-contain {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .wrapper-container-aside {
-        margin-right: 0px;
-        max-width: 100%;
+    .search-proyects-input input {
+        max-width: 602px;
+        width: 100%;
     }
 } 
 
@@ -44,5 +69,32 @@
     .wrapper-imagen-perfil {
         top: 151px;
     }
+    .wrapper-container-aside {
+        max-width: 100%;
+        margin: auto;
+    }
+    .search-proyects {
+        max-width: 100%;
+    }
+    .search-proyects-input input {
+        max-width: 254px;
+        width: 474px;
+    }
+    .filters {
+        max-width: 100%;
+      
+    }
 }
 
+@media (min-width: 370px) and (max-width: 480px) {
+    .search-proyects-input input {
+      max-width: 78%;
+      width: 100%;
+    }
+  }
+
+  @media (min-width: 481px) and (max-width: 675px) {
+    .search-proyects-input input {
+      width: 100%;
+    }
+  }
