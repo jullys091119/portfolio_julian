@@ -50,6 +50,16 @@ body,html {
    padding: 26px 10px;
 }
 
+.grid-item {
+    background-color: white;
+    border: 1px solid ;
+    height: 80px;
+}
+
+.grid-item img {
+    height: 100%
+}
+
 img {
     max-width: 100%;
     height: auto;
@@ -65,7 +75,7 @@ img {
 
 .imagenBanner  {
   width: 100%;
-  height: 477px;
+  height: 300px;
   border-radius: 12px;
   object-fit: cover;
 }
@@ -90,7 +100,7 @@ img {
     display: inline-flex;
     gap: 40px;
     font-family: "lato-regular";
-    padding-left: 0px;
+    padding-left: 25px;
     margin-bottom: 0px;
 }
 
@@ -178,14 +188,20 @@ img {
 }
 
 .wrapper-container-aside {
-    border: 1px solid green;
-    height: 240px;
+    border-radius: 12px;
     max-width: 270px;
     margin-right: 30px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Tres columnas de tamaño igual */
+    
+    gap: 2px; /* Espacio entre las celdas */
+    background-color: white;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Posición X, Posición Y, Desenfoque, Color */
 }
 .works {
     background-color: white;
     flex: 2;
     height: 400px;
     background-color: #F0F2F5;
+    min-width: 50%;
 }
