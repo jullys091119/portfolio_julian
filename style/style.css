@@ -10,6 +10,7 @@ body,html {
 }
 
 
+
 .aside {
  background-color: #F0F2F5;
  flex: 1;
@@ -21,7 +22,6 @@ body,html {
     display: flex;
     flex-direction: column;
     position: relative;
-   
 }
 
 .container-img {
@@ -39,7 +39,6 @@ body,html {
     margin: 10px auto;
     background-color: white;
     border-radius: 8px;
-  
 }
 
 .filters-title {
@@ -79,28 +78,45 @@ img {
   object-fit: cover;
 }
 
- .main {
+.like-comment {
+    border: 1px solid transparent;
+    height: 40px;
+    border-top-color: #dadde1;
+    border-bottom-color: #dadde1;
+    display: flex;
+    justify-content: space-evenly;
+    padding: 28px 0px;
+}
+
+.like, .comment {
+    color: gray;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.main {
     max-width: 100%;
     margin: auto;
     display: flex;
     justify-content: center;
     background-color: #F0F2F5;
     min-height: 100vh;
- }
+}
+
 .menu-list {
     border: 1px solid transparent;
     border-top-color: #dadde1;
     max-width: 900px;
     margin: 112px auto 0 auto;
     display: flex;
-
 }
 
 .menu-list ul {
     display: inline-flex;
     gap: 40px;
     font-family: "lato-regular";
-    padding-left: 25px;
+    padding-left: 0px;
     margin-bottom: 0px;
 }
 
@@ -120,6 +136,15 @@ img {
     border-radius: 1px;
 }
 
+.picture-wall {
+    width: 580px;
+    display: block;
+    margin: 20px auto;
+}
+
+.picture-wall > img {
+  border-radius: 12px;
+}
 
 .search-proyects {
     max-width: 100%;
@@ -149,25 +174,40 @@ img {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    /* margin-left: 15px; */
-    
 }
 
 .wrapper {
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
 }
 
+.wrapper-publication-header-name {
+    font-family: "inter-regular";
+    font-size: 20px;
+}
+
+.wrapper-publication-header {
+    border: 1px solid;
+    height: 71px;
+    display: flex;
+    padding: 10px;
+    align-items: center;
+    border: 1px solid transparent;
+    border-bottom-color: #dadde1;
+    margin-bottom: 10px;
+}
+
 .wrapper-divider {
     height: 10px;
 }
+
 .wrapper-contain {
     max-width: 900px;
     width: 100%;
     display: flex;
-    padding: 30px;
-    background-color: #F0F2F5;;
-    
+    padding: 30px 0px;
+    background-color: #F0F2F5;
 }
+
 .wrapper-imagen-perfil {
     display: flex;
     width: 100px;
@@ -200,14 +240,16 @@ img {
 }
 
 .wrapper-publication {
-    height: 400px;
     background: white;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 11px;
+    padding: 30px 0px;
+    margin: 10px 0;
 }
+
 .works {
     background-color: white;
     flex: 2;
-    height: 400px;
     background-color: #F0F2F5;
     min-width: 50%;
 }
