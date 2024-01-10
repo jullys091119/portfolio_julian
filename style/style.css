@@ -24,6 +24,10 @@ body,html {
     position: relative;
 }
 
+.box-comment {
+    display: flex;
+}
+
 .container-img {
     width: 170px;
     border: 3px solid white;
@@ -146,6 +150,18 @@ img {
   border-radius: 12px;
 }
 
+.search-proyects-comment {
+  display: none;
+}
+
+.search-proyects-comment-active {
+    display: block;
+}
+
+.search-proyects-comment .search-proyects-input {
+    justify-content: flex-start;
+}
+
 .search-proyects {
     max-width: 100%;
     background-color: white;
@@ -164,6 +180,9 @@ img {
     height: 43px;
     border: 1px solid #00000026;
     border-radius: 23px;
+    padding-left: 30px;
+    outline: 0;
+
 }
 
 .search-proyects-avatar {
@@ -243,7 +262,7 @@ img {
     background: white;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     border-radius: 11px;
-    padding: 30px 0px;
+    /* padding: 30px 0px; */
     margin: 10px 0;
 }
 
