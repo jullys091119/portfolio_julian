@@ -1,7 +1,10 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, query, where, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-let comment;
+import { 
+  getFirestore,
+   collection, query, where, getDocs, addDoc, doc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+let contenidoMostrado = false;
+let comment
 // Tu configuración de Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyBrF8HJGhy-Ayfgvht-Hvf0D3co9STMSiY",
@@ -37,91 +40,103 @@ const changeTabs = () => {
 // Función para mostrar datos de usuario
 const showDataUser = async () => {
   const name = document.querySelector(".wrapper-imagen-nombre h1");
-  const perfil =  document.querySelector(".wrapper-imagen-perfil img");
+  const perfil = document.querySelector(".wrapper-imagen-perfil img");
   const search = document.querySelector(".search-proyects-input .search-proyects-avatar img");
   perfil.setAttribute("src", "./img/julian.jpg");
   search.setAttribute("src", "./img/julian.jpg");
   name.innerHTML = "Julián Ontiveros Ramirez";
- 
+
 };
 
-// Función para mostrar trabajos en la pared
+
 const showWorksOnWall = async () => {
-  const gridWorks = document.querySelectorAll(".grid-item");
-  const publication = document.querySelector(".publication");
   const data = await getData(); // Obtener el array de objetos de la colección
-  gridWorks.forEach ((gridItem, index)   => {
-    const img = gridItem.querySelector("img");
-    if (data[index] && data[index].imagen) {
-      img.setAttribute("src", data[index].imagen);
-    }
-    gridItem.addEventListener("click", (e) => {
-      if (!gridItem.dataset.publicationAdded) {
-        const itemData = data[index]; // Obtener los datos específicos para este grid-item
-        const myHTML = `
+  const publication = document.querySelector(".publication");
+  const gridWorks = document.querySelectorAll(".grid-item");
+  const gridWorksImage = document.querySelectorAll(".grid-item img");
+  let commentValue;
+  gridWorks.forEach((el, index) => {
+    const element = data[index];
+    gridWorksImage[index].setAttribute("src", `./img/proyect-${index}.png`);
+    if (element.id) {
+      el.addEventListener("click", (e) => {
+        if (!el.classList.contains("item-" + index) || contenidoMostrado) {
+          return; // Salir de la función si el elemento ya tiene la clase o el contenido ya se mostró
+        }
+
+        const template = `
           <div class="wrapper-publication">
-            <div class="wrapper-publication-header">
+          <div class="wrapper-publication">
+          <div class="wrapper-publication-header">
+            <div class="search-proyects-avatar">
+              <img src="./img/julian.jpg" alt="">
+            </div>
+            <div class="wrapper-publication-header-name">
+              <p>Julián Ontiveros Ramírez</p>  
+            </div>
+          </div>
+          <div class="picture-wall">
+            <a href="${element.link}">
+              <img src="./img/proyect-${index}.png" alt="">
+            </a>
+          </div>
+          <div class="like-comment">
+            <div class="like">
+              <i class="fa-solid fa-thumbs-up"></i>
+              <p>Me gusta</p>
+            </div>
+            <div class="comment">
+              <i class="fa-solid fa-comment"></i>
+              <p>Comentar</p>
+            </div>
+          </div>
+          <div class="search-proyects search-proyects-comment">
+            <div class="search-proyects-input">
               <div class="search-proyects-avatar">
                 <img src="./img/julian.jpg" alt="">
               </div>
-              <div class="wrapper-publication-header-name">
-                <p>Julián Ontiveros Ramírez</p>  
-              </div>
-            </div>
-            <div class="picture-wall">
-              <a href="${itemData.link}">
-                <img src="${itemData.imagen}" alt="">
-              </a>
-            </div>
-            <div class="like-comment">
-              <div class="like">
-                <i class="fa-solid fa-thumbs-up"></i>
-                <p>Me gusta</p>
-              </div>
-              <div class="comment">
-                <i class="fa-solid fa-comment"></i>
-                <p>Comentar</p>
-              </div>
-            </div>
-            <div class="search-proyects search-proyects-comment">
-              <div class="search-proyects-input">
-                <div class="search-proyects-avatar">
-                  <img src="./img/julian.jpg" alt="">
-                </div>
-                <input type="search" name="" id="" placeholder=" Comentar">
-              </div>
+              <input type="search" name="" id="" placeholder=" Comentar">
             </div>
           </div>
+        </div>
+        </div>
           </div>
         `;
-        publication.insertAdjacentHTML("beforebegin", myHTML);
-        gridItem.dataset.publicationAdded = true;
-       comment = document.querySelector(".comment")
-       let isComment = false
-       comment.addEventListener("click", (e) => { 
-          isComment = true
-          const commenttaries = document.querySelector(".search-proyects-comment")
-          commenttaries.style.display="block"
-       })
 
-       const inputComment = document.querySelector(".search-proyects-comment input")
+        publication.insertAdjacentHTML("beforebegin", template);
+        // Marcar que el contenido ya se ha mostrado
+        contenidoMostrado = true;
+        let isComment = false;
+        comment.addEventListener("click", (e) => {
+          isComment = true;
+          const commenttaries = document.querySelector(".search-proyects-comment");
+          commenttaries.style.display = "block";
 
-       inputComment.addEventListener("keyup", (event)=> {
-        const commentValue = inputComment.value;
-         sendComment(commentValue)
-       })
-       
-      }
-    });
+          const inputComment = document.querySelector(".search-proyects-comment input");
+          inputComment.addEventListener("keyup", (event) => {
+            if (event.key === "Enter") {
+              sendComment(inputComment.value, element.id); //No se envia hasta que haya un enter
+              inputComment.value = ""; // Limpiar el input después de enviar el comentario
+            }
+          });
+        });
+      });
+    }
   });
+
+
 };
 
-const sendComment = async (comment) => {
 
+
+const sendComment = async (comment, id) => {
+  
   try {
-    const docRef = await addDoc(collection(db, "publicacion"), {
-     comentario: comment
+    const docRef = doc(db, "publicacion", id);
+    await updateDoc(docRef, {
+      comentarios: arrayUnion(comment)
     });
+    
     console.log("Document written with ID: ", docRef.id);
   } catch (e) {
     console.error("Error adding document: ", e);
@@ -142,15 +157,14 @@ const getData = async () => {
       link: doc.data().link
     });
   });
-  
+
   return usuarios; // Devolver el array de usuarios
 };
 
- console.log(comment)
- // Llamar a las funciones necesarias
+console.log(comment)
+// Llamar a las funciones necesarias
 showWorksOnWall();
 changeTabs();
 showDataUser();
 
 
- 
