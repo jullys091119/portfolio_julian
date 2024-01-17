@@ -1,19 +1,19 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { 
+import {
   getFirestore,
-   collection, 
-   query,
-   where,
-   getDocs,
-   addDoc,
-   doc,
-   updateDoc,
-   arrayUnion,
-   limit,
-   orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
+  collection,
+  query,
+  where,
+  getDocs,
+  addDoc,
+  doc,
+  updateDoc,
+  arrayUnion,
+  limit,
+  orderBy,
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 let contenidoMostrado = false;
-let comment
+let allComments = []; //
 
 // Tu configuración de Firebase
 const firebaseConfig = {
@@ -23,12 +23,13 @@ const firebaseConfig = {
   storageBucket: "portfolios-f8860.appspot.com",
   messagingSenderId: "901489273438",
   appId: "1:901489273438:web:a5ecea3fe11a336aa6a2cf",
-  measurementId: "G-WV9GWCXTQP"
+  measurementId: "G-WV9GWCXTQP",
 };
 
 // Inicializar Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const publicacion = collection(db, "publicacion");
 
 // Función para cambiar pestañas
 const changeTabs = () => {
@@ -51,23 +52,56 @@ const changeTabs = () => {
 const showDataUser = async () => {
   const name = document.querySelector(".wrapper-imagen-nombre h1");
   const perfil = document.querySelector(".wrapper-imagen-perfil img");
-  const search = document.querySelector(".search-proyects-input .search-proyects-avatar img");
+  const search = document.querySelector(
+    ".search-proyects-input .search-proyects-avatar img"
+  );
   perfil.setAttribute("src", "./img/julian.jpg");
   search.setAttribute("src", "./img/julian.jpg");
   name.innerHTML = "Julián Ontiveros Ramirez";
 };
 
+// Esta función crea el HTML para un comentario
+const createCommentElement = (comentario) => {
+  const commentContainer = document.createElement("div");
+  commentContainer.classList.add("comment");
 
+  const commentHeader = document.createElement("div");
+  commentHeader.classList.add("comment-header");
+
+  const avatar = document.createElement("img");
+  avatar.classList.add("comment-avatar");
+  avatar.src = "./img/avatar.png";
+  avatar.alt = "Avatar";
+  avatar.style.width = "40px";
+  avatar.style.height = "40px";
+  avatar.style.borderRadius = "100%";
+
+  const author = document.createElement("div");
+  author.classList.add("comment-author");
+  author.textContent = "Anonim@";
+
+  const body = document.createElement("div");
+  body.classList.add("comment-body");
+  body.textContent = comentario;
+
+  commentHeader.appendChild(avatar);
+  commentHeader.appendChild(author);
+  commentContainer.appendChild(commentHeader);
+  commentContainer.appendChild(body);
+
+  return commentContainer;
+};
 const showWorksOnWall = async () => {
-  let isVisible = false
+  let isVisible = false;
   const data = await getData(); // Obtener el array de objetos de la colección
   const publication = document.querySelector(".publication");
   const gridWorks = document.querySelectorAll(".grid-item");
   const gridWorksImage = document.querySelectorAll(".grid-item img");
- 
+
   let commentValue;
   gridWorks.forEach((el, index) => {
-    const element = data[index]; 
+    const element = data[index];
+    allComments[index] = element.comentarios;
     gridWorksImage[index].setAttribute("src", `./img/proyect-${index}.png`);
     if (element.id) {
       el.addEventListener("click", (e) => {
@@ -101,7 +135,7 @@ const showWorksOnWall = async () => {
             </div>
           </div>
           <div class="showComments">
-            <p>Ver mas comentarios</p>
+            <p class="watching-more-comments">Ver mas comentarios</p>
           </div>
           <div class="search-proyects search-proyects-comment">
             <div class="search-proyects-input">
@@ -115,57 +149,42 @@ const showWorksOnWall = async () => {
         </div>
           </div>
         `;
-        
-       
+
         publication.insertAdjacentHTML("beforebegin", template);
-        
-        const showComments = document.querySelector(".showComments")
-         showComments.style.display="flex"
+
+        const showComments = document.querySelector(".showComments");
+        showComments.style.display = "flex";
         // Marcar que el contenido ya se ha mostrado
         contenidoMostrado = true;
         let isComment = false;
-          isComment = true;
-          const inputComment = document.querySelector(".search-proyects-comment input");
-          inputComment.addEventListener("keyup", (event) => {
-            if (event.key === "Enter") {
-              showComments.style.visibility="visible"
-              sendComment(inputComment.value, element.id); //No se envia hasta que haya un enter
-              inputComment.value = ""; // Limpiar el input después de enviar el comentario
-              showComments.style.display="flex"
-            }
-          })
-        element.comentarios.forEach((comentario,index) => {
-          
-          const commentContainer = document.createElement("div");
-          commentContainer.classList.add("comment");
-        
-          const commentHeader = document.createElement("div");
-          commentHeader.classList.add("comment-header");
-        
-          const avatar = document.createElement("img");
-          avatar.classList.add("comment-avatar");
-          avatar.src = "./img/avatar.png";
-          avatar.alt = "Avatar";
-          avatar.style.width = "40px";
-          avatar.style.height = "40px";
-          avatar.style.borderRadius="100%"
-        
-          const author = document.createElement("div");
-          author.classList.add("comment-author");
-          author.textContent = "Anonim@";
-        
-          const body = document.createElement("div");
-          body.classList.add("comment-body");
-          body.textContent = comentario;
-        
-          commentHeader.appendChild(avatar);
-          commentHeader.appendChild(author);
-          commentContainer.appendChild(commentHeader);
-          commentContainer.appendChild(body);
-        
+        isComment = true;
+        const inputComment = document.querySelector(
+          ".search-proyects-comment input"
+        );
+        inputComment.addEventListener("keyup", (event) => {
+          if (event.key === "Enter") {
+            showComments.style.visibility = "visible";
+            sendComment(inputComment.value, element.id); //No se envia hasta que haya un enter
+            inputComment.value = ""; // Limpiar el input después de enviar el comentario
+            showComments.style.display = "flex";
+          }
+        });
+
+        element.comentarios.forEach((comentario, index) => {
+          const commentContainer = createCommentElement(comentario);
           const showCommentsContainer = document.querySelector(".showComments");
           showCommentsContainer.appendChild(commentContainer);
-        })
+        });
+
+
+        const moreComments = document.querySelector(".watching-more-comments");
+        let watchingAllComments = false;
+        moreComments.addEventListener("click", async (e) => {
+          console.log(e);
+          const data = await getData(true); // Obtener todos los comentarios
+          watchingAllComments = true;
+          await getData(watchingAllComments);
+        });
       });
     }
   });
@@ -175,19 +194,29 @@ const sendComment = async (comment, id) => {
   try {
     const docRef = doc(db, "publicacion", id);
     await updateDoc(docRef, {
-      comentarios: arrayUnion(comment)
+      comentarios: arrayUnion(comment),
     });
     console.log("Document written with ID: ", docRef.id);
   } catch (e) {
     console.error("Error adding document: ", e);
   }
-}
+};
 
-const getData = async () => {
+const getData = async (watchingAllComments) => {
   const q = query(collection(db, "publicacion"));
   const querySnapshot = await getDocs(q);
   let usuarios = [];
+
   querySnapshot.forEach((doc) => {
+    const commentLong = doc.data().comentarios.length;
+    let comentariosLimitados = [];
+    if (watchingAllComments) {
+      comentariosLimitados = doc.data().comentarios.slice(0, commentLong);
+      showMoreComments(comentariosLimitados);
+    } else {
+      comentariosLimitados = doc.data().comentarios.slice(0, 1);
+    }
+
     usuarios.push({
       id: doc.id,
       nombre: doc.data().nombre,
@@ -195,16 +224,21 @@ const getData = async () => {
       imagen: doc.data().imagen,
       imagenPerfil: doc.data().img_perfil,
       link: doc.data().link,
-      comentarios: doc.data().comentarios.slice(0,1)
+      comentarios: comentariosLimitados,
     });
   });
   return usuarios;
 };
 
+const showMoreComments = (comments) => {
+  comments.forEach((comentario) => {
+     const  commentContainer = createCommentElement(comentario)
+     const showCommentsContainer =  document.querySelector(".showComments");
+     showCommentsContainer.appendChild(commentContainer);
+  });
+};
 
 // Llamar a las funciones necesarias
 showWorksOnWall();
 changeTabs();
 showDataUser();
-
-
