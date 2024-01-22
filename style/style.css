@@ -145,6 +145,8 @@ input[name="search"], input[name="search-proyects"] {
      border-radius: 3px;
      border: none;
      background-color: white;
+     font-size: 15px;
+     font-weight: 900;
 }
 
 .like-comment {
@@ -259,14 +261,14 @@ input[name="search"], input[name="search-proyects"] {
 
 .search-proyects-input {
     display: flex;
-    justify-content: space-around;
+  
     padding: 10px;
     align-items: center;
 }
 
 .search-proyects-input input {
-    max-width: 470px;
-    width: 470px;
+    max-width: 507px;
+    width: 523px;
     height: 35px;
     border: 0px;
     border-radius: 23px;
