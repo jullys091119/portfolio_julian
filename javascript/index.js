@@ -16,7 +16,7 @@ let contenidoMostrado = false;
 let allComments = []; //
 let newComment = false
 let counter = 0;
-let hasClicked = false; 
+let hasClicked = false;
 let dislikeCounter = false
 
 // Tu configuración de Firebase
@@ -38,6 +38,7 @@ const publicacion = collection(db, "publicacion");
 // Función para cambiar pestañas
 export const changeTabs = () => {
   const tabs = document.querySelectorAll("[id^='menu-list-tabs-']");
+  tabs[0].classList.add("menu-list-tabs-active")
   tabs.forEach((tab) => {
     tab.addEventListener("click", (e) => {
       // Quitar la clase 'menu-list-tabs-active' de todas las pestañas
@@ -95,128 +96,131 @@ const createCommentElement = (comentario) => {
   return commentContainer;
 };
 
+const templateGrids = (link, index, clicked) => {
+  return `
+  <div class="wrapper-publication">
+  <div class="wrapper-publication">
+  <div class="wrapper-publication-header">
+    <div class="search-proyects-avatar">
+      <img src="./img/julian.jpg" alt="">
+      </div>
+    <div class="wrapper-publication-header-name">
+      <p>Julián Ontiveros Ramírez</p>  
+    </div>
+  </div>
+  <div class="picture-wall">
+  <a href="${link}">
+      <img src="./img/proyect-${index}.png" alt="">
+    </a>
+  </div>
+  <div class="counter-likes">
+  <i class="fa-duotone fa-thumbs-up"></i>
+  <p>${clicked}</p>
+  </div>
+  <div class="like-comment ">
+    <button class="like hoverComment">
+    <i class="fa-thin fa-thumbs-up"></i>
+      <p>Me gusta</p>
+      </button>
+      <button class="comment hoverComment">
+      <i class="fa-thin fa-message"></i>
+      <p>Comentar</p>
+      </button>
+      </div>
+      <div class="showComments">
+      <div class="showComments-comments">
+      <i class="fa-light fa-arrow-turn-down-right"></i>
+      <p class="watching-more-comments">Ver mas comentarios</p>
+      </div>
+      </div>
+  <div class="search-proyects search-proyects-comment">
+    <div class="search-proyects-input">
+      <div class="search-proyects-avatar">
+        <img class="avatar-comment" src="./img/julian.jpg" alt="">
+      </div>
+      <input type="search" name="search" id="" placeholder="Escribe un comentario...">
+    </div>
+    </div>
+    </div>
+</div>
+
+</div>
+`;
+
+}
+
 export const showWorksOnWall = async () => {
-  let isVisible = false;
   const data = await getData(); // Obtener el array de objetos de la colección
   const publication = document.querySelector(".publication");
   const gridWorks = document.querySelectorAll(".grid-item");
   const gridWorksImage = document.querySelectorAll(".grid-item img");
-  const clicked = localStorage.getItem('likes'); 
+  const clicked = localStorage.getItem('likes');
   console.log(clicked, "clicked")
-  let commentValue;
   gridWorks.forEach((el, index) => {
     const element = data[index];
     allComments[index] = element.comentarios;
     gridWorksImage[index].setAttribute("src", `./img/proyect-${index}.png`);
-    if (element.id) {
-      el.addEventListener("click", (e) => {
-        if (!el.classList.contains("item-" + index) || contenidoMostrado) {
-          return; // Salir de la función si el elemento ya tiene la clase o el contenido ya se mostró
-        }
-        const template = `
-          <div class="wrapper-publication">
-          <div class="wrapper-publication">
-          <div class="wrapper-publication-header">
-            <div class="search-proyects-avatar">
-              <img src="./img/julian.jpg" alt="">
-              </div>
-            <div class="wrapper-publication-header-name">
-              <p>Julián Ontiveros Ramírez</p>  
-            </div>
-          </div>
-          <div class="picture-wall">
-          <a href="${element.link}">
-              <img src="./img/proyect-${index}.png" alt="">
-            </a>
-          </div>
-          <div class="counter-likes">
-          <i class="fa-duotone fa-thumbs-up"></i>
-          <p>${clicked}</p>
-          </div>
-          <div class="like-comment ">
-            <button class="like hoverComment">
-            <i class="fa-thin fa-thumbs-up"></i>
-              <p>Me gusta</p>
-              </button>
-              <button class="comment hoverComment">
-              <i class="fa-thin fa-message"></i>
-              <p>Comentar</p>
-              </button>
-              </div>
-              <div class="showComments">
-              <div class="showComments-comments">
-              <i class="fa-light fa-arrow-turn-down-right"></i>
-              <p class="watching-more-comments">Ver mas comentarios</p>
-              </div>
-              </div>
-          <div class="search-proyects search-proyects-comment">
-            <div class="search-proyects-input">
-              <div class="search-proyects-avatar">
-                <img class="avatar-comment" src="./img/julian.jpg" alt="">
-              </div>
-              <input type="search" name="search" id="" placeholder="Escribe un comentario...">
-            </div>
-            </div>
-            </div>
-        </div>
-        
-        </div>
-        `;
-
-        publication.insertAdjacentHTML("beforebegin", template);
-        
-        const showComments = document.querySelector(".showComments");
-        counterLikes(element.id, element.likes)
-      
-        
-        showComments.style.display = "flex";
-        // Marcar que el contenido ya se ha mostrado
-        contenidoMostrado = true;
-        let isComment = false;
-        isComment = true;
-        const inputComment = document.querySelector(
-          ".search-proyects-comment input"
-        );
-        inputComment.addEventListener("keyup", (event) => {
-          if (event.key === "Enter") {
-            showComments.style.visibility = "visible";
-            sendComment(inputComment.value, element.id); //No se envia hasta que haya un enter
-            inputComment.value = ""; // Limpiar el input después de enviar el comentario
-            showComments.style.display = "flex";
-          }
-        });
-
-        element.comentarios.forEach((comentario, index) => {
-          const commentContainer = createCommentElement(comentario);
-          const showCommentsContainer = document.querySelector(".showComments");
-          showCommentsContainer.appendChild(commentContainer);
-        });
 
 
-        const moreComments = document.querySelector(".watching-more-comments");
-        let watchingAllComments = false;
-        moreComments.addEventListener("click", async (e) => {
-          console.log(e);
-          const data = await getData(true); // Obtener todos los comentarios
-          watchingAllComments = true;
-          await getData(watchingAllComments);
-        });
-      });
+    // el.addEventListener("click", (e) => {
+    const template = templateGrids(element.link, index, clicked)
+    publication.insertAdjacentHTML("beforebegin", template);
+    if (!el.classList.contains("item-" + index) || contenidoMostrado) {
+      return; // Salir de la función si el elemento ya tiene la clase o el contenido ya se mostró
     }
+
+    counterLikes(element.id, element.likes)
+    const showComments = document.querySelector(".showComments");
+
+
+    showComments.style.display = "flex";
+    // Marcar que el contenido ya se ha mostrado
+    contenidoMostrado = true;
+    let isComment = false;
+    isComment = true;
+    const inputComment = document.querySelector(
+      ".search-proyects-comment input"
+    );
+    inputComment.addEventListener("keyup", (event) => {
+      if (event.key === "Enter") {
+        showComments.style.visibility = "visible";
+        sendComment(inputComment.value, element.id); //No se envia hasta que haya un enter
+        inputComment.value = ""; // Limpiar el input después de enviar el comentario
+        showComments.style.display = "flex";
+      }
+    });
+
+    element.comentarios.forEach((comentario, index) => {
+      const commentContainer = createCommentElement(comentario);
+      const showCommentsContainer = document.querySelector(".showComments");
+      showCommentsContainer.appendChild(commentContainer);
+    });
+
+
+    const moreComments = document.querySelector(".watching-more-comments");
+    let watchingAllComments = false;
+    moreComments.addEventListener("click", async (e) => {
+      console.log(e);
+      const data = await getData(true); // Obtener todos los comentarios
+      watchingAllComments = true;
+      await getData(watchingAllComments);
+    });
+
+
   });
   // Verifica si ya se ha hecho clic al cargar la página
 };
 
 
 const counterLikes = async (id, likes) => {
-  const like= document.querySelector(".like");//para hacer click
+  const like = document.querySelector(".like");//para hacer click
   like.classList.add("active-like");
   const counterLikes = document.querySelector(".counter-likes p")
   like.addEventListener("click", async (e) => {
     hasClicked = true
     const hasLiked = like.classList.contains("active-like");
     console.log(hasLiked, "jasliked")
-    if(hasLiked) {
+    if (hasLiked) {
       likes--
       like.classList.remove("active-like");
     } else {
@@ -224,23 +228,20 @@ const counterLikes = async (id, likes) => {
       like.classList.add("active-like");
     }
     localStorage.setItem("likes", likes.toString());
-    const currentLikes   =  localStorage.getItem("likes")
+    const currentLikes = localStorage.getItem("likes")
     const counterLikesElement = document.querySelector(".counter-likes p");
-    counterLikesElement.textContent  = currentLikes
+    counterLikesElement.textContent = currentLikes
     // Actualizar el contador en la interfaz
-    
+
     const docRef = doc(db, "publicacion", id);
     await updateDoc(docRef, { likes });
   })
-  
-  
+
+
 }
 
-
-
-
 const sendComment = async (comment, id) => {
-  if(comment !== "") {
+  if (comment !== "") {
     try {
       const docRef = doc(db, "publicacion", id);
       await updateDoc(docRef, {
@@ -249,21 +250,21 @@ const sendComment = async (comment, id) => {
       console.log("Document written with ID: ", docRef.id);
       const newCommentElement = createCommentElement(comment); // Suponiendo que tienes una función createCommentElement para generar el HTML del comentario
       const showCommentsContainer = document.querySelector(".showComments");
-         // Insertar el nuevo comentario al principio de la lista
-         if (showCommentsContainer.firstChild) {
-          newComment = true
-          showCommentsContainer.appendChild(newCommentElement, showCommentsContainer.firstChild);
-          showCommentsContainer.childNodes[3].remove()
-        } else {
-          // Si no hay ningún comentario, simplemente añadirlo al final
-          showCommentsContainer.appendChild(newCommentElement);
-        }
+      // Insertar el nuevo comentario al principio de la lista
+      if (showCommentsContainer.firstChild) {
+        newComment = true
+        showCommentsContainer.appendChild(newCommentElement, showCommentsContainer.firstChild);
+        showCommentsContainer.childNodes[3].remove()
+      } else {
+        // Si no hay ningún comentario, simplemente añadirlo al final
+        showCommentsContainer.appendChild(newCommentElement);
+      }
       // showCommentsContainer.appendChild(newCommentElement);
     } catch (e) {
       console.error("Error adding document: ", e);
     }
 
-  } 
+  }
 };
 
 const getData = async (watchingAllComments) => {
@@ -279,8 +280,8 @@ const getData = async (watchingAllComments) => {
       showMoreComments(comentariosLimitados);
     } else {
       comentariosLimitados = doc.data().comentarios.reverse().slice(0, 1);
-    } 
-   
+    }
+
 
     usuarios.push({
       id: doc.id,
@@ -290,7 +291,7 @@ const getData = async (watchingAllComments) => {
       imagenPerfil: doc.data().img_perfil,
       link: doc.data().link,
       comentarios: comentariosLimitados,
-      likes:doc.data().likes
+      likes: doc.data().likes
     });
   });
   return usuarios;
@@ -298,9 +299,9 @@ const getData = async (watchingAllComments) => {
 
 const showMoreComments = (comments) => {
   comments.forEach((comentario) => {
-     const  commentContainer = createCommentElement(comentario)
-     const showCommentsContainer =  document.querySelector(".showComments");
-     showCommentsContainer.appendChild(commentContainer);
+    const commentContainer = createCommentElement(comentario)
+    const showCommentsContainer = document.querySelector(".showComments");
+    showCommentsContainer.appendChild(commentContainer);
   });
 };
 
