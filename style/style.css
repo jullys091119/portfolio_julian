@@ -9,8 +9,6 @@ body,html {
     background-color: white;
 }
 
-
-
 .aside {
  background-color: #F0F2F5;
  flex: 1;
@@ -50,10 +48,38 @@ body,html {
     border-radius: 12px;
     width: 200px;
     background-color: #F0F2F5;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); 
 }
+
+.counter-likes {
+    height: 40px;
+    margin-bottom: 0px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.counter-likes > p {
+    color: #666666;
+}
+
+.counter-likes > i {
+    color: #1877F2;
+}
+
 
 .container-list-menu {
     height: 300px;
+}
+
+.disable-selection {
+    -moz-user-select: none; /* Firefox */
+     -ms-user-select: none; /* Internet Explorer */
+  -khtml-user-select: none; /* KHTML browsers (e.g. Konqueror) */
+ -webkit-user-select: none; /* Chrome, Safari, and Opera */
+ -webkit-touch-callout: none; /* Disable Android and iOS callouts*/
+ user-select: none; 
 }
 
 .filters {
@@ -82,6 +108,10 @@ body,html {
     height: 100%
 }
 
+.hoverComment i {
+    font-size: 20px;
+}
+
 img {
     max-width: 100%;
     height: auto;
@@ -105,14 +135,32 @@ input[name="search"], input[name="search-proyects"] {
     background-color: #F0F2F5;
 }
 
+.like-comment .hoverComment {
+    width: 200px;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     height: 30px;
+     cursor: pointer;
+     border-radius: 3px;
+     border: none;
+     background-color: white;
+}
+
 .like-comment {
     border: 1px solid transparent;
-    height: 40px;
+    height: 70px;
     border-top-color: #dadde1;
     border-bottom-color: #dadde1;
     display: flex;
     justify-content: space-evenly;
-    padding: 28px 0px;
+    align-items: center;
+}
+.active-like {
+    color: #1877F2 !important;
+}
+.like-comment .hoverComment:hover {
+    background-color: #F0F2F5;
 }
 
 .like, .comment {
@@ -176,10 +224,19 @@ input[name="search"], input[name="search-proyects"] {
 .showComments {
     display: flex;
     flex-direction: column;  
-    gap: 35px;
     overflow-y: scroll;
     padding: 35px;
     height: 190px;
+    gap: 20px;
+}
+
+.showComments-comments {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #666666;
+    font-weight: 600;
+    font-size: 14px;
 }
  
 /* .search-proyects-comment {
@@ -289,7 +346,6 @@ input[name="search"], input[name="search-proyects"] {
     margin-right: 30px;
     display: grid;
     grid-template-columns: repeat(3, 1fr); /* Tres columnas de tamaño igual */
-    
     gap: 2px; /* Espacio entre las celdas */
     background-color: white;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Posición X, Posición Y, Desenfoque, Color */
