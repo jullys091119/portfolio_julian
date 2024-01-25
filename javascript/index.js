@@ -15,9 +15,9 @@ import {
 let contenidoMostrado = false;
 let allComments = []; //
 let newComment = false
-let counter = 0;
-let hasClicked = false;
-let dislikeCounter = false
+// let counter = 0;
+// let hasClicked = false;
+// let dislikeCounter = false
 
 // Tu configuración de Firebase
 const firebaseConfig = {
@@ -96,7 +96,7 @@ const createCommentElement = (comentario) => {
   return commentContainer;
 };
 
-const templateGrids = (link, index, clicked) => {
+const templateGrids = (link, index, clicked, comments, currentLikes) => {
   return `
   <div class="wrapper-publication">
   <div class="wrapper-publication">
@@ -114,8 +114,12 @@ const templateGrids = (link, index, clicked) => {
     </a>
   </div>
   <div class="counter-likes">
-  <i class="fa-duotone fa-thumbs-up"></i>
-  <p>${clicked}</p>
+   <div class="counter-likes_likes">
+    <i class="fa-duotone fa-thumbs-up"></i>
+    <p>${currentLikes}</p>
+
+    </div>
+    <p>${comments} comentarios</p>
   </div>
   <div class="like-comment ">
     <button class="like hoverComment">
@@ -129,7 +133,7 @@ const templateGrids = (link, index, clicked) => {
       </div>
       <div class="showComments">
       <div class="showComments-comments">
-      <i class="fa-light fa-arrow-turn-down-right"></i>
+      <i class="fa-light fa-arrow-turn-down-right icon-comment"></i>
       <p class="watching-more-comments">Ver mas comentarios</p>
       </div>
       </div>
@@ -155,32 +159,46 @@ export const showWorksOnWall = async () => {
   const gridWorks = document.querySelectorAll(".grid-item");
   const gridWorksImage = document.querySelectorAll(".grid-item img");
   const clicked = localStorage.getItem('likes');
-  console.log(clicked, "clicked")
+  const hasLiked = localStorage.getItem("hasLiked")
+
+  
   gridWorks.forEach((el, index) => {
     const element = data[index];
-    allComments[index] = element.comentarios;
+    allComments = element.comentarios;
+    const currentLikes = element.likes;
+    const longitudComentarios = element.longitudComentarios
     gridWorksImage[index].setAttribute("src", `./img/proyect-${index}.png`);
-
+    const template = templateGrids(element.link, index, clicked, element.longitudComentarios, currentLikes)
+    
 
     // el.addEventListener("click", (e) => {
-    const template = templateGrids(element.link, index, clicked)
     publication.insertAdjacentHTML("beforebegin", template);
+
     if (!el.classList.contains("item-" + index) || contenidoMostrado) {
       return; // Salir de la función si el elemento ya tiene la clase o el contenido ya se mostró
     }
 
-    counterLikes(element.id, element.likes)
     const showComments = document.querySelector(".showComments");
+    const inputComment = document.querySelector(".search-proyects-comment input");
+    const inputHidde = document.querySelector(".search-proyects-comment");
+    counterLikes(element.id, element.likes, hasLiked)
+    const comment = document.querySelector('.comment')
+    let long  = false
+    if(longitudComentarios == 0) {
+      showComments.style.display ="none";
+      long = true
+      inputHidde.style.display="none"
+      comment.addEventListener("click", (e) => {
+        inputHidde.style.display="block"
+      })
+     } else {
+      showComments.style.display ="flex"
+    }
+    if(long) {
+      long = false
+    } 
 
 
-    showComments.style.display = "flex";
-    // Marcar que el contenido ya se ha mostrado
-    contenidoMostrado = true;
-    let isComment = false;
-    isComment = true;
-    const inputComment = document.querySelector(
-      ".search-proyects-comment input"
-    );
     inputComment.addEventListener("keyup", (event) => {
       if (event.key === "Enter") {
         showComments.style.visibility = "visible";
@@ -189,8 +207,13 @@ export const showWorksOnWall = async () => {
         showComments.style.display = "flex";
       }
     });
+   
+    // Marcar que el contenido ya se ha mostrado
+    contenidoMostrado = true;
+    let isComment = false;
+    isComment = true;
 
-    element.comentarios.forEach((comentario, index) => {
+    allComments.forEach((comentario, index) => {
       const commentContainer = createCommentElement(comentario);
       const showCommentsContainer = document.querySelector(".showComments");
       showCommentsContainer.appendChild(commentContainer);
@@ -198,35 +221,48 @@ export const showWorksOnWall = async () => {
 
 
     const moreComments = document.querySelector(".watching-more-comments");
+    const iconComment = document.querySelector(".icon-comment")
     let watchingAllComments = false;
-    moreComments.addEventListener("click", async (e) => {
-      console.log(e);
-      const data = await getData(true); // Obtener todos los comentarios
-      watchingAllComments = true;
-      await getData(watchingAllComments);
-    });
+      moreComments.addEventListener("click", async (e) => {
+        watchingAllComments = true;
+        moreComments.style.display="none"
+        iconComment.style.display="none"
+        showComments.style.paddingTop = "10px"
+        await getData(watchingAllComments);
+      });
 
 
   });
-  // Verifica si ya se ha hecho clic al cargar la página
+
+
+  
 };
 
 
-const counterLikes = async (id, likes) => {
-  const like = document.querySelector(".like");//para hacer click
-  like.classList.add("active-like");
-  const counterLikes = document.querySelector(".counter-likes p")
+
+const counterLikes = async (id, likes, hasLiked) => {
+  const like = document.querySelector(".like");//para hacer clic
+  if(hasLiked) {
+    like.classList.add("active-like");
+  } 
+  
   like.addEventListener("click", async (e) => {
-    hasClicked = true
     const hasLiked = like.classList.contains("active-like");
-    console.log(hasLiked, "jasliked")
-    if (hasLiked) {
+    console.log(hasLiked, "hasliked")
+    if (hasLiked) { // nola tiene
       likes--
       like.classList.remove("active-like");
-    } else {
+      try {
+        localStorage.removeItem("hasLiked")
+      } catch (error) {
+        console.log(error)
+      }
+    } else { // si la tiene
       likes++;
+      localStorage.setItem("hasLiked", "false")
       like.classList.add("active-like");
     }
+
     localStorage.setItem("likes", likes.toString());
     const currentLikes = localStorage.getItem("likes")
     const counterLikesElement = document.querySelector(".counter-likes p");
@@ -241,6 +277,7 @@ const counterLikes = async (id, likes) => {
 }
 
 const sendComment = async (comment, id) => {
+  
   if (comment !== "") {
     try {
       const docRef = doc(db, "publicacion", id);
@@ -268,15 +305,16 @@ const sendComment = async (comment, id) => {
 };
 
 const getData = async (watchingAllComments) => {
+
   const q = query(collection(db, "publicacion"));
   const querySnapshot = await getDocs(q);
   let usuarios = [];
-
   querySnapshot.forEach((doc) => {
-    const commentLong = doc.data().comentarios.length;
-    let comentariosLimitados = [];
+    const commentLong = doc.data().comentarios.length ;
+    let comentariosLimitados = []; 
     if (watchingAllComments) {
-      comentariosLimitados = doc.data().comentarios.reverse().slice(0, commentLong);
+      comentariosLimitados = doc.data().comentarios.reverse().slice(1, commentLong);
+      // console.log(comentariosLimitados, " ")
       showMoreComments(comentariosLimitados);
     } else {
       comentariosLimitados = doc.data().comentarios.reverse().slice(0, 1);
@@ -291,6 +329,7 @@ const getData = async (watchingAllComments) => {
       imagenPerfil: doc.data().img_perfil,
       link: doc.data().link,
       comentarios: comentariosLimitados,
+      longitudComentarios: commentLong,
       likes: doc.data().likes
     });
   });
