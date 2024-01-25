@@ -14,7 +14,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 let contenidoMostrado = false;
 let allComments = []; //
-let newComment = false
+let newComment = false;
 // let counter = 0;
 // let hasClicked = false;
 // let dislikeCounter = false
@@ -38,7 +38,7 @@ const publicacion = collection(db, "publicacion");
 // Función para cambiar pestañas
 export const changeTabs = () => {
   const tabs = document.querySelectorAll("[id^='menu-list-tabs-']");
-  tabs[0].classList.add("menu-list-tabs-active")
+  tabs[0].classList.add("menu-list-tabs-active");
   tabs.forEach((tab) => {
     tab.addEventListener("click", (e) => {
       // Quitar la clase 'menu-list-tabs-active' de todas las pestañas
@@ -150,26 +150,29 @@ const templateGrids = (link, index, clicked, comments, currentLikes) => {
 
 </div>
 `;
-
-}
+};
 
 export const showWorksOnWall = async () => {
   const data = await getData(); // Obtener el array de objetos de la colección
   const publication = document.querySelector(".publication");
   const gridWorks = document.querySelectorAll(".grid-item");
   const gridWorksImage = document.querySelectorAll(".grid-item img");
-  const clicked = localStorage.getItem('likes');
-  const hasLiked = localStorage.getItem("hasLiked")
+  const clicked = localStorage.getItem("likes");
+  const hasLiked = localStorage.getItem("hasLiked");
 
-  
   gridWorks.forEach((el, index) => {
     const element = data[index];
     allComments = element.comentarios;
     const currentLikes = element.likes;
-    const longitudComentarios = element.longitudComentarios
+    const longitudComentarios = element.longitudComentarios;
     gridWorksImage[index].setAttribute("src", `./img/proyect-${index}.png`);
-    const template = templateGrids(element.link, index, clicked, element.longitudComentarios, currentLikes)
-    
+    const template = templateGrids(
+      element.link,
+      index,
+      clicked,
+      element.longitudComentarios,
+      currentLikes
+    );
 
     // el.addEventListener("click", (e) => {
     publication.insertAdjacentHTML("beforebegin", template);
@@ -179,25 +182,26 @@ export const showWorksOnWall = async () => {
     }
 
     const showComments = document.querySelector(".showComments");
-    const inputComment = document.querySelector(".search-proyects-comment input");
+    const inputComment = document.querySelector(
+      ".search-proyects-comment input"
+    );
     const inputHidde = document.querySelector(".search-proyects-comment");
-    counterLikes(element.id, element.likes, hasLiked)
-    const comment = document.querySelector('.comment')
-    let long  = false
-    if(longitudComentarios == 0) {
-      showComments.style.display ="none";
-      long = true
-      inputHidde.style.display="none"
+    counterLikes(element.id, element.likes, hasLiked);
+    const comment = document.querySelector(".comment");
+    let long = false;
+    if (longitudComentarios == 0) {
+      showComments.style.display = "none";
+      long = true;
+      inputHidde.style.display = "none";
       comment.addEventListener("click", (e) => {
-        inputHidde.style.display="block"
-      })
-     } else {
-      showComments.style.display ="flex"
+        inputHidde.style.display = "block";
+      });
+    } else {
+      showComments.style.display = "flex";
     }
-    if(long) {
-      long = false
-    } 
-
+    if (long) {
+      long = false;
+    }
 
     inputComment.addEventListener("keyup", (event) => {
       if (event.key === "Enter") {
@@ -207,7 +211,7 @@ export const showWorksOnWall = async () => {
         showComments.style.display = "flex";
       }
     });
-   
+
     // Marcar que el contenido ya se ha mostrado
     contenidoMostrado = true;
     let isComment = false;
@@ -219,65 +223,56 @@ export const showWorksOnWall = async () => {
       showCommentsContainer.appendChild(commentContainer);
     });
 
-
     const moreComments = document.querySelector(".watching-more-comments");
-    const iconComment = document.querySelector(".icon-comment")
+    const iconComment = document.querySelector(".icon-comment");
     let watchingAllComments = false;
-      moreComments.addEventListener("click", async (e) => {
-        watchingAllComments = true;
-        moreComments.style.display="none"
-        iconComment.style.display="none"
-        showComments.style.paddingTop = "10px"
-        await getData(watchingAllComments);
-      });
-
-
+    moreComments.addEventListener("click", async (e) => {
+      watchingAllComments = true;
+      moreComments.style.display = "none";
+      iconComment.style.display = "none";
+      showComments.style.paddingTop = "10px";
+      await getData(watchingAllComments);
+    });
   });
-
-
-  
 };
 
-
-
 const counterLikes = async (id, likes, hasLiked) => {
-  const like = document.querySelector(".like");//para hacer clic
-  if(hasLiked) {
+  const like = document.querySelector(".like"); //para hacer clic
+  if (hasLiked) {
     like.classList.add("active-like");
-  } 
-  
+  }
+
   like.addEventListener("click", async (e) => {
     const hasLiked = like.classList.contains("active-like");
-    console.log(hasLiked, "hasliked")
-    if (hasLiked) { // nola tiene
-      likes--
+    console.log(hasLiked, "hasliked");
+    if (hasLiked) {
+      // nola tiene
+      likes--;
       like.classList.remove("active-like");
       try {
-        localStorage.removeItem("hasLiked")
+        localStorage.removeItem("hasLiked");
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
-    } else { // si la tiene
+    } else {
+      // si la tiene
       likes++;
-      localStorage.setItem("hasLiked", "false")
+      localStorage.setItem("hasLiked", "false");
       like.classList.add("active-like");
     }
 
     localStorage.setItem("likes", likes.toString());
-    const currentLikes = localStorage.getItem("likes")
+    const currentLikes = localStorage.getItem("likes");
     const counterLikesElement = document.querySelector(".counter-likes p");
-    counterLikesElement.textContent = currentLikes
+    counterLikesElement.textContent = currentLikes;
     // Actualizar el contador en la interfaz
 
     const docRef = doc(db, "publicacion", id);
     await updateDoc(docRef, { likes });
-  })
-
-
-}
+  });
+};
 
 const sendComment = async (comment, id) => {
-  
   if (comment !== "") {
     try {
       const docRef = doc(db, "publicacion", id);
@@ -285,41 +280,42 @@ const sendComment = async (comment, id) => {
         comentarios: arrayUnion(comment),
       });
       console.log("Document written with ID: ", docRef.id);
+      
       const newCommentElement = createCommentElement(comment); // Suponiendo que tienes una función createCommentElement para generar el HTML del comentario
+      
       const showCommentsContainer = document.querySelector(".showComments");
-      // Insertar el nuevo comentario al principio de la lista
+      
+      // Agregar el nuevo comentario al principio de la lista de comentarios
       if (showCommentsContainer.firstChild) {
-        newComment = true
-        showCommentsContainer.appendChild(newCommentElement, showCommentsContainer.firstChild);
-        showCommentsContainer.childNodes[3].remove()
+        showCommentsContainer.insertBefore(newCommentElement,showCommentsContainer.firstChild);
+        showCommentsContainer.removeChild(showCommentsContainer.lastChild);
       } else {
         // Si no hay ningún comentario, simplemente añadirlo al final
         showCommentsContainer.appendChild(newCommentElement);
       }
-      // showCommentsContainer.appendChild(newCommentElement);
     } catch (e) {
       console.error("Error adding document: ", e);
     }
-
   }
 };
 
 const getData = async (watchingAllComments) => {
-
   const q = query(collection(db, "publicacion"));
   const querySnapshot = await getDocs(q);
   let usuarios = [];
   querySnapshot.forEach((doc) => {
-    const commentLong = doc.data().comentarios.length ;
-    let comentariosLimitados = []; 
+    const commentLong = doc.data().comentarios.length;
+    let comentariosLimitados = [];
     if (watchingAllComments) {
-      comentariosLimitados = doc.data().comentarios.reverse().slice(1, commentLong);
+      comentariosLimitados = doc
+        .data()
+        .comentarios.reverse()
+        .slice(1, commentLong);
       // console.log(comentariosLimitados, " ")
       showMoreComments(comentariosLimitados);
     } else {
       comentariosLimitados = doc.data().comentarios.reverse().slice(0, 1);
     }
-
 
     usuarios.push({
       id: doc.id,
@@ -330,20 +326,19 @@ const getData = async (watchingAllComments) => {
       link: doc.data().link,
       comentarios: comentariosLimitados,
       longitudComentarios: commentLong,
-      likes: doc.data().likes
+      likes: doc.data().likes,
     });
   });
   return usuarios;
 };
 
 const showMoreComments = (comments) => {
+  console.log(showMoreComments, "showmore")
   comments.forEach((comentario) => {
-    const commentContainer = createCommentElement(comentario)
+    const commentContainer = createCommentElement(comentario);
     const showCommentsContainer = document.querySelector(".showComments");
     showCommentsContainer.appendChild(commentContainer);
   });
 };
 
-
 // Llamar a las funciones necesarias
-
