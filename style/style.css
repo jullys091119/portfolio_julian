@@ -57,14 +57,21 @@ body,html {
     padding: 10px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 4px;
+}
+
+.counter-likes_likes {
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
 .counter-likes > p {
     color: #666666;
 }
 
-.counter-likes > i {
+.counter-likes .counter-likes_likes > i {
     color: #1877F2;
 }
 
