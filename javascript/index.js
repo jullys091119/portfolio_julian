@@ -11,10 +11,13 @@ import {
   arrayUnion,
   limit,
   orderBy,
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 let contenidoMostrado = false;
 let allComments = []; //
 let newComment = false;
+let dateCreation;
+let datePost;
 
 // Tu configuración de Firebase
 const firebaseConfig = {
@@ -65,9 +68,8 @@ export const showDataUser = async () => {
 
 
 
-
-// Esta función crea el HTML para un comentario
-const createCommentElement = (comentario) => {
+const createCommentElement = (comentario, date) => {
+  console.log(date, "date")
   const commentContainer = document.createElement("div");
   commentContainer.classList.add("comment");
 
@@ -87,20 +89,28 @@ const createCommentElement = (comentario) => {
   author.textContent = "Anonim@";
 
   const body = document.createElement("div");
+  const bodyWrapper = document.createElement("div");
   body.classList.add("comment-body");
   body.textContent = comentario;
+
+  const p = document.createElement("p");
+  p.textContent = datePost;
+
+  bodyWrapper.appendChild(body);
+  bodyWrapper.appendChild(p);
+  bodyWrapper.classList.add("wrapper-date");
 
   commentHeader.appendChild(avatar);
   commentHeader.appendChild(author);
   commentContainer.appendChild(commentHeader);
-  commentContainer.appendChild(body);
+  commentContainer.appendChild(bodyWrapper);
 
   return commentContainer;
 };
 
 
 
-const templateGrids = (link, index, clicked, comments, currentLikes) => {
+const templateGrids = (link, index, clicked, comments, currentLikes, dateCreation) => {
   return `
   <div class="wrapper-publication">
   <div class="wrapper-publication">
@@ -109,7 +119,8 @@ const templateGrids = (link, index, clicked, comments, currentLikes) => {
       <img src="./img/julian.jpg" alt="">
       </div>
     <div class="wrapper-publication-header-name">
-      <p>Julián Ontiveros Ramírez</p>  
+      <p>Julián Ontiveros Ramírez</p> 
+      <span>${dateCreation}</span>
     </div>
   </div>
   <div class="picture-wall">
@@ -156,8 +167,6 @@ const templateGrids = (link, index, clicked, comments, currentLikes) => {
 `;
 };
 
-
-
 export const showWorksOnWall = async () => {
   const data = await getData(); // Obtener el array de objetos de la colección
   const publication = document.querySelector(".publication");
@@ -171,13 +180,18 @@ export const showWorksOnWall = async () => {
     allComments = element.comentarios;
     const currentLikes = element.likes;
     const longitudComentarios = element.longitudComentarios;
+    const fechaCreacion = element.fechaCreacion
+    datePost = element.fechaPost
     gridWorksImage[index].setAttribute("src", `./img/proyect-${index}.png`);
+    dateCreation = setDateCreation(fechaCreacion.seconds, fechaCreacion.nanoseconds)
+    datePost = setDatePost(datePost.seconds, datePost.nanoseconds)
     const template = templateGrids(
       element.link,
       index,
       clicked,
       element.longitudComentarios,
-      currentLikes
+      currentLikes,
+      dateCreation
     );
 
     publication.insertAdjacentHTML("beforebegin", template);
@@ -241,6 +255,35 @@ export const showWorksOnWall = async () => {
   });
 };
 
+const setDateCreation = (seconds, nanoseconds) => {
+  const options = { 
+  weekday: 'long', 
+  year: 'numeric', 
+  month: 'long', 
+  day: 'numeric',
+  timeZone: 'America/Mexico_City'
+  };
+  
+  const firebaseTimestamp = { seconds: seconds, nanoseconds: nanoseconds };
+  const date = new Date(firebaseTimestamp.seconds * 1000 + firebaseTimestamp.nanoseconds / 1000000);
+  const formattedDate = date.toLocaleDateString('es-MX', options);
+  return formattedDate
+}
+
+const setDatePost = (seconds, nanoseconds) => {
+  const options = { 
+  weekday: 'long', 
+  year: 'numeric', 
+  month: 'long', 
+  day: 'numeric',
+  timeZone: 'America/Mexico_City'
+  };
+  
+  const firebaseTimestamp = { seconds: seconds, nanoseconds: nanoseconds };
+  const date = new Date(firebaseTimestamp.seconds * 1000 + firebaseTimestamp.nanoseconds / 1000000);
+  const formattedDate = date.toLocaleDateString('es-MX', options);
+  return formattedDate
+}
 
 
 const hiddeMoreComments = (long) => {
@@ -254,7 +297,6 @@ const hiddeMoreComments = (long) => {
     iconComment.style.display = "block";
   }
 }
-
 
 
 const counterLikes = async (id, likes, hasLiked) => {
@@ -297,14 +339,18 @@ const sendComment = async (comment, id) => {
   if (comment !== "") {
     try {
       const docRef = doc(db, "publicacion", id);
+      const timestamp = serverTimestamp();
       await updateDoc(docRef, {
         comentarios: arrayUnion(comment),
+        fechaPost: timestamp
       });
       newComment = true
       const newCommentElement = createCommentElement(comment); // Suponiendo que tienes una función createCommentElement para generar el HTML del comentario
       const showCommentsContainer = document.querySelector(".showComments");
       const x = await getData()
+      console.log(x)
       hiddeMoreComments(x[0].longitudComentarios)
+      createCommentElement(comment )
       // Agregar el nuevo comentario al principio de la lista de comentarios
       if (showCommentsContainer.firstChild) {
         if(newComment) {
@@ -352,6 +398,8 @@ const getData = async (watchingAllComments) => {
       comentarios: comentariosLimitados,
       longitudComentarios: commentLong,
       likes: doc.data().likes,
+      fechaCreacion: doc.data().fechaCreacion,
+      fechaPost: doc.data().fechaPost
     });
   });
   return usuarios;
