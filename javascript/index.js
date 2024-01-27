@@ -15,9 +15,6 @@ import {
 let contenidoMostrado = false;
 let allComments = []; //
 let newComment = false;
-// let counter = 0;
-// let hasClicked = false;
-// let dislikeCounter = false
 
 // Tu configuración de Firebase
 const firebaseConfig = {
@@ -34,6 +31,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const publicacion = collection(db, "publicacion");
+
+
 
 // Función para cambiar pestañas
 export const changeTabs = () => {
@@ -52,17 +51,20 @@ export const changeTabs = () => {
   });
 };
 
+
+
 // Función para mostrar datos de usuario
 export const showDataUser = async () => {
   const name = document.querySelector(".wrapper-imagen-nombre h1");
   const perfil = document.querySelector(".wrapper-imagen-perfil img");
-  const search = document.querySelector(
-    ".search-proyects-input .search-proyects-avatar img"
-  );
+  const search = document.querySelector(".search-proyects-input .search-proyects-avatar img");
   perfil.setAttribute("src", "./img/julian.jpg");
   search.setAttribute("src", "./img/julian.jpg");
   name.innerHTML = "Julián Ontiveros Ramirez";
 };
+
+
+
 
 // Esta función crea el HTML para un comentario
 const createCommentElement = (comentario) => {
@@ -96,6 +98,8 @@ const createCommentElement = (comentario) => {
   return commentContainer;
 };
 
+
+
 const templateGrids = (link, index, clicked, comments, currentLikes) => {
   return `
   <div class="wrapper-publication">
@@ -119,7 +123,7 @@ const templateGrids = (link, index, clicked, comments, currentLikes) => {
     <p>${currentLikes}</p>
 
     </div>
-    <p>${comments} comentarios</p>
+    <p> <span class="longComments">${comments}</span> comentarios</p>
   </div>
   <div class="like-comment ">
     <button class="like hoverComment">
@@ -152,6 +156,8 @@ const templateGrids = (link, index, clicked, comments, currentLikes) => {
 `;
 };
 
+
+
 export const showWorksOnWall = async () => {
   const data = await getData(); // Obtener el array de objetos de la colección
   const publication = document.querySelector(".publication");
@@ -159,7 +165,7 @@ export const showWorksOnWall = async () => {
   const gridWorksImage = document.querySelectorAll(".grid-item img");
   const clicked = localStorage.getItem("likes");
   const hasLiked = localStorage.getItem("hasLiked");
-
+  
   gridWorks.forEach((el, index) => {
     const element = data[index];
     allComments = element.comentarios;
@@ -174,7 +180,6 @@ export const showWorksOnWall = async () => {
       currentLikes
     );
 
-    // el.addEventListener("click", (e) => {
     publication.insertAdjacentHTML("beforebegin", template);
 
     if (!el.classList.contains("item-" + index) || contenidoMostrado) {
@@ -184,29 +189,29 @@ export const showWorksOnWall = async () => {
     const showComments = document.querySelector(".showComments");
     const inputComment = document.querySelector(
       ".search-proyects-comment input"
-    );
-    const inputHidde = document.querySelector(".search-proyects-comment");
-    counterLikes(element.id, element.likes, hasLiked);
-    const comment = document.querySelector(".comment");
-    let long = false;
-    if (longitudComentarios == 0) {
-      showComments.style.display = "none";
-      long = true;
-      inputHidde.style.display = "none";
-      comment.addEventListener("click", (e) => {
-        inputHidde.style.display = "block";
-      });
-    } else {
-      showComments.style.display = "flex";
-    }
-    if (long) {
-      long = false;
-    }
-
-    inputComment.addEventListener("keyup", (event) => {
-      if (event.key === "Enter") {
-        showComments.style.visibility = "visible";
-        sendComment(inputComment.value, element.id); //No se envia hasta que haya un enter
+      );
+      const inputHidde = document.querySelector(".search-proyects-comment");
+      counterLikes(element.id, element.likes, hasLiked);
+      const comment = document.querySelector(".comment");
+      let long = false;
+      if (longitudComentarios == 0) {
+        showComments.style.display = "none";
+        long = true;
+        inputHidde.style.display = "none";
+        comment.addEventListener("click", (e) => {
+          inputHidde.style.display = "block";
+        });
+      } else {
+        showComments.style.display = "flex";
+      }
+      if (long) {
+        long = false;
+      }
+      
+      inputComment.addEventListener("keyup", (event) => {
+        if (event.key === "Enter") {
+          showComments.style.visibility = "visible";
+          sendComment(inputComment.value, element.id,  element.longitudComentarios,); //No se envia hasta que haya un enter
         inputComment.value = ""; // Limpiar el input después de enviar el comentario
         showComments.style.display = "flex";
       }
@@ -216,13 +221,13 @@ export const showWorksOnWall = async () => {
     contenidoMostrado = true;
     let isComment = false;
     isComment = true;
-
+    
     allComments.forEach((comentario, index) => {
       const commentContainer = createCommentElement(comentario);
       const showCommentsContainer = document.querySelector(".showComments");
       showCommentsContainer.appendChild(commentContainer);
     });
-
+    
     const moreComments = document.querySelector(".watching-more-comments");
     const iconComment = document.querySelector(".icon-comment");
     let watchingAllComments = false;
@@ -235,6 +240,22 @@ export const showWorksOnWall = async () => {
     });
   });
 };
+
+
+
+const hiddeMoreComments = (long) => {
+  const moreComments = document.querySelector(".watching-more-comments");
+  const iconComment = document.querySelector(".icon-comment")
+  if(long <=1) {
+    moreComments.style.display = "none";
+    iconComment.style.display = "none";
+  } else {
+    moreComments.style.display = "flex";
+    iconComment.style.display = "block";
+  }
+}
+
+
 
 const counterLikes = async (id, likes, hasLiked) => {
   const like = document.querySelector(".like"); //para hacer clic
@@ -279,16 +300,20 @@ const sendComment = async (comment, id) => {
       await updateDoc(docRef, {
         comentarios: arrayUnion(comment),
       });
-      console.log("Document written with ID: ", docRef.id);
-      
+      newComment = true
       const newCommentElement = createCommentElement(comment); // Suponiendo que tienes una función createCommentElement para generar el HTML del comentario
-      
       const showCommentsContainer = document.querySelector(".showComments");
-      
+      const x = await getData()
+      hiddeMoreComments(x[0].longitudComentarios)
       // Agregar el nuevo comentario al principio de la lista de comentarios
       if (showCommentsContainer.firstChild) {
-        showCommentsContainer.insertBefore(newCommentElement,showCommentsContainer.firstChild);
-        showCommentsContainer.removeChild(showCommentsContainer.lastChild);
+        if(newComment) {
+          newComment = false
+          let res = document.querySelector(".longComments")
+          res.textContent = x[0].longitudComentarios
+          showCommentsContainer.removeChild(showCommentsContainer.lastChild);
+          showCommentsContainer.appendChild(newCommentElement,showCommentsContainer.firstChild);
+        }
       } else {
         // Si no hay ningún comentario, simplemente añadirlo al final
         showCommentsContainer.appendChild(newCommentElement);
