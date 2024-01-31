@@ -17,8 +17,10 @@ let contenidoMostrado = false;
 let allComments = []; //
 let newComment = false;
 let dateCreation;
-let datePost;
-
+let showDatePost = [];
+let comentariosLimitados = [];
+let indexComment = 0
+let isOpenFullComments = false
 // Tu configuración de Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyBrF8HJGhy-Ayfgvht-Hvf0D3co9STMSiY",
@@ -33,7 +35,7 @@ const firebaseConfig = {
 // Inicializar Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const publicacion = collection(db, "publicacion");
+
 
 
 
@@ -54,8 +56,6 @@ export const changeTabs = () => {
   });
 };
 
-
-
 // Función para mostrar datos de usuario
 export const showDataUser = async () => {
   const name = document.querySelector(".wrapper-imagen-nombre h1");
@@ -66,13 +66,15 @@ export const showDataUser = async () => {
   name.innerHTML = "Julián Ontiveros Ramirez";
 };
 
-
-
-const createCommentElement = (comentario, date) => {
-  console.log(date, "date")
+const createCommentElement = (comentario,index) => {
+  let arrPost = []
+  if(isOpenFullComments) {
+     arrPost = [...new Set(showDatePost)];
+  } else {
+    arrPost = showDatePost.reverse()
+  }
   const commentContainer = document.createElement("div");
   commentContainer.classList.add("comment");
-
   const commentHeader = document.createElement("div");
   commentHeader.classList.add("comment-header");
 
@@ -92,9 +94,8 @@ const createCommentElement = (comentario, date) => {
   const bodyWrapper = document.createElement("div");
   body.classList.add("comment-body");
   body.textContent = comentario;
-
   const p = document.createElement("p");
-  p.textContent = datePost;
+  p.textContent = arrPost[index]
 
   bodyWrapper.appendChild(body);
   bodyWrapper.appendChild(p);
@@ -107,7 +108,6 @@ const createCommentElement = (comentario, date) => {
 
   return commentContainer;
 };
-
 
 
 const templateGrids = (link, index, clicked, comments, currentLikes, dateCreation) => {
@@ -167,6 +167,12 @@ const templateGrids = (link, index, clicked, comments, currentLikes, dateCreatio
 `;
 };
 
+const settingDatePost = async (post) => {
+  post.forEach((el,index) => {
+    showDatePost.push(setDatePost(el.seconds, el.nanoseconds))
+  })
+}
+
 export const showWorksOnWall = async () => {
   const data = await getData(); // Obtener el array de objetos de la colección
   const publication = document.querySelector(".publication");
@@ -174,17 +180,17 @@ export const showWorksOnWall = async () => {
   const gridWorksImage = document.querySelectorAll(".grid-item img");
   const clicked = localStorage.getItem("likes");
   const hasLiked = localStorage.getItem("hasLiked");
-  
-  gridWorks.forEach((el, index) => {
+
+  gridWorks.forEach(async(el, index) => {
     const element = data[index];
     allComments = element.comentarios;
     const currentLikes = element.likes;
     const longitudComentarios = element.longitudComentarios;
     const fechaCreacion = element.fechaCreacion
-    datePost = element.fechaPost
+    const datePost = element.fechaPost
+    settingDatePost(datePost)    
     gridWorksImage[index].setAttribute("src", `./img/proyect-${index}.png`);
     dateCreation = setDateCreation(fechaCreacion.seconds, fechaCreacion.nanoseconds)
-    datePost = setDatePost(datePost.seconds, datePost.nanoseconds)
     const template = templateGrids(
       element.link,
       index,
@@ -193,67 +199,86 @@ export const showWorksOnWall = async () => {
       currentLikes,
       dateCreation
     );
-
     publication.insertAdjacentHTML("beforebegin", template);
-
     if (!el.classList.contains("item-" + index) || contenidoMostrado) {
       return; // Salir de la función si el elemento ya tiene la clase o el contenido ya se mostró
     }
-
     const showComments = document.querySelector(".showComments");
-    const inputComment = document.querySelector(
-      ".search-proyects-comment input"
-      );
-      const inputHidde = document.querySelector(".search-proyects-comment");
-      counterLikes(element.id, element.likes, hasLiked);
-      const comment = document.querySelector(".comment");
-      let long = false;
-      if (longitudComentarios == 0) {
-        showComments.style.display = "none";
-        long = true;
-        inputHidde.style.display = "none";
-        comment.addEventListener("click", (e) => {
-          inputHidde.style.display = "block";
-        });
-      } else {
-        showComments.style.display = "flex";
-      }
-      if (long) {
-        long = false;
-      }
-      
-      inputComment.addEventListener("keyup", (event) => {
-        if (event.key === "Enter") {
-          showComments.style.visibility = "visible";
-          sendComment(inputComment.value, element.id,  element.longitudComentarios,); //No se envia hasta que haya un enter
-        inputComment.value = ""; // Limpiar el input después de enviar el comentario
-        showComments.style.display = "flex";
-      }
-    });
-
-    // Marcar que el contenido ya se ha mostrado
-    contenidoMostrado = true;
-    let isComment = false;
-    isComment = true;
-    
-    allComments.forEach((comentario, index) => {
-      const commentContainer = createCommentElement(comentario);
-      const showCommentsContainer = document.querySelector(".showComments");
-      showCommentsContainer.appendChild(commentContainer);
-    });
-    
-    const moreComments = document.querySelector(".watching-more-comments");
-    const iconComment = document.querySelector(".icon-comment");
-    let watchingAllComments = false;
-    moreComments.addEventListener("click", async (e) => {
-      watchingAllComments = true;
-      moreComments.style.display = "none";
-      iconComment.style.display = "none";
-      showComments.style.paddingTop = "10px";
-      await getData(watchingAllComments);
-    });
+    const inputComment = document.querySelector(".search-proyects-comment input");
+    const inputHidde = document.querySelector(".search-proyects-comment");
+    const comment = document.querySelector(".comment");
+    showAllComments(allComments)
+    counterLikes(element.id, element.likes, hasLiked);
+    hiddeInputComment(showComments, longitudComentarios, inputHidde, comment)
+    hiddeIconMoreComment(showComments),  
+    sendInputComment(inputComment, showComments, element) 
   });
 };
+
+const hiddeIconMoreComment  = (showComments)=> {
+  const moreComments = document.querySelector(".watching-more-comments");
+  const iconComment = document.querySelector(".icon-comment");
+  let watchingAllComments = false;
+  moreComments.addEventListener("click", async (e) => {
+    watchingAllComments = true;
+    isOpenFullComments = true
+    moreComments.style.display = "none";
+    iconComment.style.display = "none";
+    showComments.style.paddingTop = "10px";
+    await getData(watchingAllComments);
+    removeFirstComment()
+  });
+
+  function removeFirstComment() {
+    const firstComment = document.querySelector(".showComments .comment");
+    if (firstComment) {
+      // Si se encuentra el primer comentario, se elimina
+      firstComment.remove();
+    }
+  }
+
+
+}
+
+const sendInputComment = (inputComment, showComments, element) => {
+  inputComment.addEventListener("keyup", (event) => {
+    if (event.key === "Enter") {
+      showComments.style.visibility = "visible";
+      sendComment(inputComment.value, element.id,  element.longitudComentarios,); //No se envia hasta que haya un enter
+    inputComment.value = ""; // Limpiar el input después de enviar el comentario
+    showComments.style.display = "flex";
+  }
+  });
+}
+
+const hiddeInputComment = (showComments, longitudComentarios, inputHidde, comment) => {
+  console.log(comment, "comment")
+  let long = false;
+  console.log(comment, "commnert")
+  if (longitudComentarios == 0) {
+    showComments.style.display = "none";
+    long = true;
+    inputHidde.style.display = "none";
+    comment.addEventListener("click", (e) => {
+      inputHidde.style.display = "block";
+    });
+  } else {
+    showComments.style.display = "flex";
+  }
+  if (long) {
+    long = false;
+  }
+};
+
+const showAllComments= (allComments) => {
+  allComments.forEach((comentario, index) => {
+    indexComment = index
+    const commentContainer = createCommentElement(comentario, index);
+    const showCommentsContainer = document.querySelector(".showComments");
+    showCommentsContainer.appendChild(commentContainer);
+  });
+ 
+}
 
 const setDateCreation = (seconds, nanoseconds) => {
   const options = { 
@@ -263,7 +288,6 @@ const setDateCreation = (seconds, nanoseconds) => {
   day: 'numeric',
   timeZone: 'America/Mexico_City'
   };
-  
   const firebaseTimestamp = { seconds: seconds, nanoseconds: nanoseconds };
   const date = new Date(firebaseTimestamp.seconds * 1000 + firebaseTimestamp.nanoseconds / 1000000);
   const formattedDate = date.toLocaleDateString('es-MX', options);
@@ -278,13 +302,11 @@ const setDatePost = (seconds, nanoseconds) => {
   day: 'numeric',
   timeZone: 'America/Mexico_City'
   };
-  
   const firebaseTimestamp = { seconds: seconds, nanoseconds: nanoseconds };
   const date = new Date(firebaseTimestamp.seconds * 1000 + firebaseTimestamp.nanoseconds / 1000000);
   const formattedDate = date.toLocaleDateString('es-MX', options);
   return formattedDate
 }
-
 
 const hiddeMoreComments = (long) => {
   const moreComments = document.querySelector(".watching-more-comments");
@@ -297,7 +319,6 @@ const hiddeMoreComments = (long) => {
     iconComment.style.display = "block";
   }
 }
-
 
 const counterLikes = async (id, likes, hasLiked) => {
   const like = document.querySelector(".like"); //para hacer clic
@@ -339,19 +360,26 @@ const sendComment = async (comment, id) => {
   if (comment !== "") {
     try {
       const docRef = doc(db, "publicacion", id);
-      const timestamp = serverTimestamp();
+      const timestamp = {
+        seconds: 1576118400, // Convertir la fecha actual a segundos
+        nanoseconds: 0  // Los nanosegundos pueden ser 0 si no los necesitas precisos
+      };
+       
+
       await updateDoc(docRef, {
         comentarios: arrayUnion(comment),
-        fechaPost: timestamp
+        // Agregar la fecha actual a un array separado en Firestore
+        fechaPost: arrayUnion(timestamp)
       });
+    
+      // No necesitas formatear la fecha aquí, puedes hacerlo cuando recuperas los datos
+
       newComment = true
-      const newCommentElement = createCommentElement(comment); // Suponiendo que tienes una función createCommentElement para generar el HTML del comentario
       const showCommentsContainer = document.querySelector(".showComments");
       const x = await getData()
-      console.log(x)
       hiddeMoreComments(x[0].longitudComentarios)
-      createCommentElement(comment )
-      // Agregar el nuevo comentario al principio de la lista de comentarios
+      settingDatePost(x[0].fechaPost)
+      const newCommentElement = createCommentElement(comment, indexComment);
       if (showCommentsContainer.firstChild) {
         if(newComment) {
           newComment = false
@@ -360,8 +388,8 @@ const sendComment = async (comment, id) => {
           showCommentsContainer.removeChild(showCommentsContainer.lastChild);
           showCommentsContainer.appendChild(newCommentElement,showCommentsContainer.firstChild);
         }
+
       } else {
-        // Si no hay ningún comentario, simplemente añadirlo al final
         showCommentsContainer.appendChild(newCommentElement);
       }
     } catch (e) {
@@ -370,22 +398,18 @@ const sendComment = async (comment, id) => {
   }
 };
 
-const getData = async (watchingAllComments) => {
+
+export const getData = async (watchingAllComments) => {
   const q = query(collection(db, "publicacion"));
   const querySnapshot = await getDocs(q);
   let usuarios = [];
   querySnapshot.forEach((doc) => {
     const commentLong = doc.data().comentarios.length;
-    let comentariosLimitados = [];
     if (watchingAllComments) {
-      comentariosLimitados = doc
-        .data()
-        .comentarios.reverse()
-        .slice(1, commentLong);
-      // console.log(comentariosLimitados, " ")
-      showMoreComments(comentariosLimitados);
+      comentariosLimitados = doc.data().comentarios.reverse().slice(0, commentLong);
+      showAllComments(comentariosLimitados)
     } else {
-      comentariosLimitados = doc.data().comentarios.reverse().slice(0, 1);
+      comentariosLimitados = doc.data().comentarios.reverse().slice(0,1);
     }
 
     usuarios.push({
@@ -405,13 +429,5 @@ const getData = async (watchingAllComments) => {
   return usuarios;
 };
 
-const showMoreComments = (comments) => {
-  console.log(showMoreComments, "showmore")
-  comments.forEach((comentario) => {
-    const commentContainer = createCommentElement(comentario);
-    const showCommentsContainer = document.querySelector(".showComments");
-    showCommentsContainer.appendChild(commentContainer);
-  });
-};
 
 // Llamar a las funciones necesarias
