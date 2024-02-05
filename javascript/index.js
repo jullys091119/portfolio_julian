@@ -1,4 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+
 import {
   getFirestore,
   collection,
@@ -13,6 +14,8 @@ import {
   orderBy,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { removePublication, WelcomeText } from "../gsap.js";
+
 let contenidoMostrado = false;
 let allComments = []; //
 let newComment = false;
@@ -20,7 +23,8 @@ let dateCreation;
 let showDatePost = [];
 let comentariosLimitados = [];
 let indexComment = 0
-let isOpenFullComments = false
+let isOpenFullComments = false;
+let isVisible = true
 // Tu configuración de Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyBrF8HJGhy-Ayfgvht-Hvf0D3co9STMSiY",
@@ -37,19 +41,24 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 
-
-
 // Función para cambiar pestañas
 export const changeTabs = () => {
+
   const tabs = document.querySelectorAll("[id^='menu-list-tabs-']");
   tabs[0].classList.add("menu-list-tabs-active");
   tabs.forEach((tab) => {
     tab.addEventListener("click", (e) => {
-      // Quitar la clase 'menu-list-tabs-active' de todas las pestañas
+      if(e.target.innerText !== "Trabajos" && e.target.innerText !== "Skills") {
+        aboutMe()
+        removePublication()
+      } else if(e.target.innerText !== "Skills" && e.target.innerText !== "Acerca de") {
+        removePublication()
+        showWorksOnWall()
+      } 
       tabs.forEach((t) => {
         t.classList.remove("menu-list-tabs-active");
       });
-
+      
       // Agregar la clase 'menu-list-tabs-active' solo a la pestaña clicada
       e.target.classList.add("menu-list-tabs-active");
     });
@@ -113,7 +122,7 @@ const createCommentElement = (comentario,index) => {
 const templateGrids = (link, index, clicked, comments, currentLikes, dateCreation) => {
   return `
   <div class="wrapper-publication">
-  <div class="wrapper-publication">
+
   <div class="wrapper-publication-header">
     <div class="search-proyects-avatar">
       <img src="./img/julian.jpg" alt="">
@@ -172,6 +181,7 @@ const settingDatePost = async (post) => {
     showDatePost.push(setDatePost(el.seconds, el.nanoseconds))
   })
 }
+ 
 
 export const showWorksOnWall = async () => {
   const data = await getData(); // Obtener el array de objetos de la colección
@@ -180,7 +190,6 @@ export const showWorksOnWall = async () => {
   const gridWorksImage = document.querySelectorAll(".grid-item img");
   const clicked = localStorage.getItem("likes");
   const hasLiked = localStorage.getItem("hasLiked");
-
   gridWorks.forEach(async(el, index) => {
     const element = data[index];
     allComments = element.comentarios;
@@ -215,6 +224,42 @@ export const showWorksOnWall = async () => {
   });
 };
 
+export const aboutMe = () => {
+  const works = document.querySelector(".works");
+   const wrapperPublication = document.createElement("div")
+   wrapperPublication.classList.add('wrapper-publication')
+   wrapperPublication.style.backgroundImage = "url(./img/about.png)"
+   wrapperPublication.style.backgroundSize = "cover";
+   wrapperPublication.style.backgroundRepeat ="no-repeat"
+   wrapperPublication.style.color="white"
+   
+   const description = `
+   ¡Hola! Soy Julian Ontiveros, un apasionado desarrollador frontend junior con un enfoque en la creación de experiencias web interactivas y atractivas. Me encanta trabajar con tecnologías como HTML, CSS y JavaScript para dar vida a diseños creativos y funcionales.
+    Durante mi formación y proyectos personales, he adquirido habilidades en el desarrollo responsive, optimización de rendimiento y accesibilidad web. También tengo experiencia con frameworks como React y herramientas de construcción como Webpack, lo que me permite crear aplicaciones web modernas y eficientes.
+    Estoy emocionado por seguir aprendiendo y creciendo en este campo, explorando nuevas tecnologías y metodologías para mejorar constantemente mis habilidades. Me apasiona colaborar en equipos multidisciplinarios y enfrentar desafíos creativos que me permitan aportar soluciones innovadoras.
+    Si estás buscando un desarrollador frontend comprometido y entusiasta que pueda contribuir con ideas frescas y habilidades técnicas sólidas, ¡me encantaría ser parte de tu equipo!
+    `;
+    
+    // Crear elementos h1 y p
+    const h1 = document.createElement("h1");
+    h1.classList.add("Welcome");
+    h1.textContent = "Bienvenido";
+    
+    const p = document.createElement("p");
+    p.classList.add("description");
+    p.textContent = description;
+    
+    
+    // Llamar a WelcomeText si es necesario
+    works.appendChild(wrapperPublication)
+    wrapperPublication.style.height = "790px";
+    // Agregar elementos al DOM
+    wrapperPublication.appendChild(h1);
+    wrapperPublication.appendChild(p);
+    WelcomeText(description);
+};
+
+
 const hiddeIconMoreComment  = (showComments)=> {
   const moreComments = document.querySelector(".watching-more-comments");
   const iconComment = document.querySelector(".icon-comment");
@@ -236,8 +281,6 @@ const hiddeIconMoreComment  = (showComments)=> {
       firstComment.remove();
     }
   }
-
-
 }
 
 const sendInputComment = (inputComment, showComments, element) => {
@@ -431,3 +474,4 @@ export const getData = async (watchingAllComments) => {
 
 
 // Llamar a las funciones necesarias
+
