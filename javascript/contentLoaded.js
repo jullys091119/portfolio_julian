@@ -1,8 +1,8 @@
-import { changeTabs, showWorksOnWall,showDataUser, getData, aboutMe} from "./index.js";
-document.addEventListener('DOMContentLoaded', function(e) {``
-  changeTabs()
+import { changeTabs,showDataUser, getData, aboutMe, showWorksOnWall} from "./index.js";
+document.addEventListener('DOMContentLoaded', async function(e) {
   aboutMe()
   showDataUser()
   getData()
- 
+  changeTabs()
+
 });

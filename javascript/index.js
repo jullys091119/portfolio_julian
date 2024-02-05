@@ -4,15 +4,10 @@ import {
   getFirestore,
   collection,
   query,
-  where,
   getDocs,
-  addDoc,
   doc,
   updateDoc,
   arrayUnion,
-  limit,
-  orderBy,
-  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { removePublication, WelcomeText } from "../gsap.js";
 
@@ -43,7 +38,7 @@ const db = getFirestore(app);
 
 // Función para cambiar pestañas
 export const changeTabs = () => {
-
+  isVisible = true
   const tabs = document.querySelectorAll("[id^='menu-list-tabs-']");
   tabs[0].classList.add("menu-list-tabs-active");
   tabs.forEach((tab) => {
@@ -123,56 +118,56 @@ const templateGrids = (link, index, clicked, comments, currentLikes, dateCreatio
   return `
   <div class="wrapper-publication">
 
-  <div class="wrapper-publication-header">
-    <div class="search-proyects-avatar">
-      <img src="./img/julian.jpg" alt="">
-      </div>
-    <div class="wrapper-publication-header-name">
-      <p>Julián Ontiveros Ramírez</p> 
-      <span>${dateCreation}</span>
-    </div>
-  </div>
-  <div class="picture-wall">
-  <a href="${link}">
-      <img src="./img/proyect-${index}.png" alt="">
-    </a>
-  </div>
-  <div class="counter-likes">
-   <div class="counter-likes_likes">
-    <i class="fa-duotone fa-thumbs-up"></i>
-    <p>${currentLikes}</p>
-
-    </div>
-    <p> <span class="longComments">${comments}</span> comentarios</p>
-  </div>
-  <div class="like-comment ">
-    <button class="like hoverComment">
-    <i class="fa-thin fa-thumbs-up"></i>
-      <p>Me gusta</p>
-      </button>
-      <button class="comment hoverComment">
-      <i class="fa-thin fa-message"></i>
-      <p>Comentar</p>
-      </button>
-      </div>
-      <div class="showComments">
-      <div class="showComments-comments">
-      <i class="fa-light fa-arrow-turn-down-right icon-comment"></i>
-      <p class="watching-more-comments">Ver mas comentarios</p>
-      </div>
-      </div>
-  <div class="search-proyects search-proyects-comment">
-    <div class="search-proyects-input">
+    <div class="wrapper-publication-header">
       <div class="search-proyects-avatar">
-        <img class="avatar-comment" src="./img/julian.jpg" alt="">
+        <img src="./img/julian.jpg" alt="">
+        </div>
+      <div class="wrapper-publication-header-name">
+        <p>Julián Ontiveros Ramírez</p> 
+        <span>${dateCreation}</span>
       </div>
-      <input type="search" name="search" id="" placeholder="Escribe un comentario...">
     </div>
+    <div class="picture-wall">
+    <a href="${link}">
+        <img src="./img/proyect-${index}.png" alt="">
+      </a>
     </div>
-    </div>
-</div>
+    <div class="counter-likes">
+    <div class="counter-likes_likes">
+      <i class="fa-duotone fa-thumbs-up"></i>
+      <p>${currentLikes}</p>
 
-</div>
+      </div>
+      <p> <span class="longComments">${comments}</span> comentarios</p>
+    </div>
+    <div class="like-comment ">
+      <button class="like hoverComment">
+      <i class="fa-thin fa-thumbs-up"></i>
+        <p>Me gusta</p>
+        </button>
+        <button class="comment hoverComment">
+        <i class="fa-thin fa-message"></i>
+        <p>Comentar</p>
+        </button>
+        </div>
+        <div class="showComments">
+        <div class="showComments-comments">
+        <i class="fa-light fa-arrow-turn-down-right icon-comment"></i>
+        <p class="watching-more-comments">Ver mas comentarios</p>
+        </div>
+    </div>
+    <div class="search-proyects search-proyects-comment">
+      <div class="search-proyects-input">
+        <div class="search-proyects-avatar">
+          <img class="avatar-comment" src="./img/julian.jpg" alt="">
+        </div>
+        <input type="search" name="search" id="" placeholder="Escribe un comentario...">
+      </div>
+      </div>
+    </div>
+  </div>
+
+
 `;
 };
 
@@ -208,10 +203,15 @@ export const showWorksOnWall = async () => {
       currentLikes,
       dateCreation
     );
-    publication.insertAdjacentHTML("beforebegin", template);
+    if (publication) {
+      publication.insertAdjacentHTML("beforebegin", template);
+    } else {
+      console.error("El elemento publication es null");
+    }
     if (!el.classList.contains("item-" + index) || contenidoMostrado) {
       return; // Salir de la función si el elemento ya tiene la clase o el contenido ya se mostró
     }
+    
     const showComments = document.querySelector(".showComments");
     const inputComment = document.querySelector(".search-proyects-comment input");
     const inputHidde = document.querySelector(".search-proyects-comment");
@@ -221,13 +221,17 @@ export const showWorksOnWall = async () => {
     hiddeInputComment(showComments, longitudComentarios, inputHidde, comment)
     hiddeIconMoreComment(showComments),  
     sendInputComment(inputComment, showComments, element) 
+    // Verificar si publication es null antes de usar appendChild
   });
 };
 
 export const aboutMe = () => {
-  const works = document.querySelector(".works");
+  const works = document.querySelector(".publication");
+   const gridItem = document.querySelectorAll(".grid-item img")
+  
+   gridItem[0].setAttribute("src", `./img/proyect-${0}.png`);
    const wrapperPublication = document.createElement("div")
-   wrapperPublication.classList.add('wrapper-publication')
+   wrapperPublication.classList.add('wrapper-publication', 'wrapper-about')
    wrapperPublication.style.backgroundImage = "url(./img/about.png)"
    wrapperPublication.style.backgroundSize = "cover";
    wrapperPublication.style.backgroundRepeat ="no-repeat"
@@ -252,7 +256,7 @@ export const aboutMe = () => {
     
     // Llamar a WelcomeText si es necesario
     works.appendChild(wrapperPublication)
-    wrapperPublication.style.height = "790px";
+    // wrapperPublication.style.height = "790px";
     // Agregar elementos al DOM
     wrapperPublication.appendChild(h1);
     wrapperPublication.appendChild(p);
@@ -474,4 +478,5 @@ export const getData = async (watchingAllComments) => {
 
 
 // Llamar a las funciones necesarias
+
 
