@@ -46,11 +46,12 @@ body,html {
     padding: 11px;
     border-radius: 12px;
     width: 200px;
-    background-color: #F0F2F5;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); 
     background: rgba(255, 255, 255, .7);
 	-webkit-backdrop-filter: blur(10px);
 	backdrop-filter: blur(10px);
+    background-color: #F0F2F5;
+    font-size: 14px;
 }
 
 .counter-likes {
@@ -89,6 +90,9 @@ body,html {
  -webkit-user-select: none; /* Chrome, Safari, and Opera */
  -webkit-touch-callout: none; /* Disable Android and iOS callouts*/
  user-select: none; 
+}
+
+.description {
 }
 
 .filters {
@@ -177,7 +181,7 @@ input[name="search"], input[name="search-proyects"] {
 .like, .comment {
     color: gray;
     display: flex;
-    align-items: center;
+    /* align-items: center; */
     gap: 10px;
 }
 
@@ -239,6 +243,8 @@ input[name="search"], input[name="search-proyects"] {
     padding: 22px;
     height: 190px;
     gap: 20px;
+    scrollbar-width: thin; /* Ancho de la barra de desplazamiento */
+    scrollbar-color: #888 transparent; /* Color de la barra de desplazamiento y su fondo */
 }
 
 .showComments-comments {
@@ -249,6 +255,21 @@ input[name="search"], input[name="search-proyects"] {
     font-weight: 600;
     font-size: 14px;
 }
+
+
+/* Estilos para la barra de desplazamiento en navegadores compatibles */
+.showComments::-webkit-scrollbar {
+    width: 3px; /* Ancho de la barra de desplazamiento */
+  }
+  
+  .showComments::-webkit-scrollbar-thumb {
+    background-color: transparent; /* Color del "pulgar" de la barra de desplazamiento */
+    border-radius: 4px; /* Borde redondeado del "pulgar" */
+  }
+  
+  .showComments::-webkit-scrollbar-track {
+    background-color: transparent; /* Color de fondo de la barra de desplazamiento */
+  }
  
 /* .search-proyects-comment {
   display: none;
@@ -270,7 +291,6 @@ input[name="search"], input[name="search-proyects"] {
 
 .search-proyects-input {
     display: flex;
-  
     padding: 10px;
     align-items: center;
 }
@@ -302,6 +322,18 @@ input[name="search"], input[name="search-proyects"] {
 
 .wrapper {
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
+}
+
+.wrapper-publication {
+    padding: 30px;
+    font-size: 19px;
+    line-height: 32px;
+    font-family: "lato-thin";
+    font-weight: 600;
+}
+
+.wrapper-publication h1 {
+ padding-left: 0px;
 }
 
 .wrapper-date {
@@ -380,12 +412,13 @@ input[name="search"], input[name="search-proyects"] {
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Posición X, Posición Y, Desenfoque, Color */
 }
 
-.wrapper-publication {
+.wrapper-publication ,.publication {
     background: white;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     border-radius: 11px;
     /* padding: 30px 0px; */
     margin: 10px 0;
+    
 }
 
 .works {
@@ -393,4 +426,8 @@ input[name="search"], input[name="search-proyects"] {
     flex: 2;
     background-color: #F0F2F5;
     min-width: 50%;
+}
+
+.welcome {
+    color: white;
 }
