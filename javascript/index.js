@@ -19,7 +19,8 @@ let showDatePost = [];
 let comentariosLimitados = [];
 let indexComment = 0
 let isOpenFullComments = false;
-let isVisible = true
+let isVisible = true;
+let isClicked = false
 // Tu configuración de Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyBrF8HJGhy-Ayfgvht-Hvf0D3co9STMSiY",
@@ -49,7 +50,12 @@ export const changeTabs = () => {
       } else if(e.target.innerText !== "Skills" && e.target.innerText !== "Acerca de") {
         removePublication()
         showWorksOnWall()
-      } 
+      } else if(!isClicked) {
+        isClicked = true
+        setLenguagesSkillsIcons()
+      } else  {
+        quitLenguagesSkillsIcons()
+      }
       tabs.forEach((t) => {
         t.classList.remove("menu-list-tabs-active");
       });
@@ -73,7 +79,7 @@ export const showDataUser = async () => {
 const createCommentElement = (comentario,index) => {
   let arrPost = []
   if(isOpenFullComments) {
-     arrPost = [...new Set(showDatePost)];
+     arrPost = showDatePost;
   } else {
     arrPost = showDatePost.reverse()
   }
@@ -194,14 +200,13 @@ export const showWorksOnWall = async () => {
     const datePost = element.fechaPost
     settingDatePost(datePost)    
     gridWorksImage[index].setAttribute("src", `./img/proyect-${index}.png`);
-    dateCreation = setDateCreation(fechaCreacion.seconds, fechaCreacion.nanoseconds)
     const template = templateGrids(
       element.link,
       index,
       clicked,
       element.longitudComentarios,
       currentLikes,
-      dateCreation
+       fechaCreacion
     );
     if (publication) {
       publication.insertAdjacentHTML("beforebegin", template);
@@ -234,7 +239,8 @@ export const aboutMe = () => {
    wrapperPublication.classList.add('wrapper-publication', 'wrapper-about')
    wrapperPublication.style.backgroundImage = "url(./img/about.png)"
    wrapperPublication.style.backgroundSize = "cover";
-   wrapperPublication.style.backgroundRepeat ="no-repeat"
+   wrapperPublication.style.backgroundRepeat ="no-repeat";
+   wrapperPublication.style.maxWidth ="100%"
    wrapperPublication.style.color="white"
    
    const description = `
@@ -327,20 +333,6 @@ const showAllComments= (allComments) => {
  
 }
 
-const setDateCreation = (seconds, nanoseconds) => {
-  const options = { 
-  weekday: 'long', 
-  year: 'numeric', 
-  month: 'long', 
-  day: 'numeric',
-  timeZone: 'America/Mexico_City'
-  };
-  const firebaseTimestamp = { seconds: seconds, nanoseconds: nanoseconds };
-  const date = new Date(firebaseTimestamp.seconds * 1000 + firebaseTimestamp.nanoseconds / 1000000);
-  const formattedDate = date.toLocaleDateString('es-MX', options);
-  return formattedDate
-}
-
 const setDatePost = (seconds, nanoseconds) => {
   const options = { 
   weekday: 'long', 
@@ -408,14 +400,13 @@ const sendComment = async (comment, id) => {
     try {
       const docRef = doc(db, "publicacion", id);
       const timestamp = {
-        seconds: 1576118400, // Convertir la fecha actual a segundos
+        seconds: Math.floor(Date.now() / 1000) , // Convertir la fecha actual a segundos
         nanoseconds: 0  // Los nanosegundos pueden ser 0 si no los necesitas precisos
       };
        
 
       await updateDoc(docRef, {
         comentarios: arrayUnion(comment),
-        // Agregar la fecha actual a un array separado en Firestore
         fechaPost: arrayUnion(timestamp)
       });
     
@@ -476,7 +467,68 @@ export const getData = async (watchingAllComments) => {
   return usuarios;
 };
 
-
+export const openMenu = () => {
+  const iconMenu = document.querySelector(".icon-menu");
+  const menuMobile = document.querySelector(".menu-mobile")
+  iconMenu.addEventListener("click", e => {
+   menuMobile.classList.toggle("active-menu-mobile")
+  })
+}
 // Llamar a las funciones necesarias
 
+export const selectMenuMobile = () => {
+  const menuMobile = document.querySelector(".menu-mobile");
+  menuMobile.addEventListener("click", e => {
+    if(e.target.innerText !== "Trabajos" && e.target.innerText !== "Skills") {
+      aboutMe()
+      removePublication()
+    } else if(e.target.innerText !== "Skills" && e.target.innerText !== "Acerca de") {
+      showWorksOnWall()
+      removePublication()
+    } else if(!isClicked) {
+     isClicked = true
+     setLenguagesSkillsIcons()
+    } else {
+      quitLenguagesSkillsIcons()
+    }
+  })
+}
+
+const setLenguagesSkillsIcons = () => {
+  const skills = document.querySelector(".skills")
+  skills.classList.add("skills-active")
+
+  const skillsWrapper = document.querySelector(".skills-wrapper")
+
+  const lenguages = {
+    html: './img/html-5.png',
+    css: './img/css-3.png',
+    javascript:'./img/js.png',
+    vue: './img/Vue.png',
+    native: './img/react.png',
+    sql: './img/sql.png',
+    width: 100,
+    height:100,
+  }
+
+  for (const leng in lenguages) {
+    let img = document.createElement("img")
+    if(leng  !== "width" && leng !== "height") {
+      img.setAttribute("src", lenguages[leng])
+      img.style.height =`${lenguages.height}px`
+      img.style.width =`${lenguages.width}px`
+      skillsWrapper.appendChild(img)
+    }
+  }
+}
+
+const quitLenguagesSkillsIcons = () => {
+  const skills = document.querySelector(".skills")
+  if(skills.classList.contains("skills-active")) {
+    skills.classList.remove("skills-active")
+  } else {
+    skills.classList.add("skills-active")
+  }
+  
+}
 
