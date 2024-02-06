@@ -9,7 +9,7 @@ import {
   updateDoc,
   arrayUnion,
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { removePublication, WelcomeText } from "../gsap.js";
+import { removePublication, } from "../gsap.js";
 
 let contenidoMostrado = false;
 let allComments = []; //
@@ -262,11 +262,8 @@ export const aboutMe = () => {
     
     // Llamar a WelcomeText si es necesario
     works.appendChild(wrapperPublication)
-    // wrapperPublication.style.height = "790px";
-    // Agregar elementos al DOM
     wrapperPublication.appendChild(h1);
     wrapperPublication.appendChild(p);
-    WelcomeText(description);
 };
 
 
@@ -483,8 +480,8 @@ export const selectMenuMobile = () => {
       aboutMe()
       removePublication()
     } else if(e.target.innerText !== "Skills" && e.target.innerText !== "Acerca de") {
-      showWorksOnWall()
       removePublication()
+      showWorksOnWall()
     } else if(!isClicked) {
      isClicked = true
      setLenguagesSkillsIcons()
@@ -494,11 +491,13 @@ export const selectMenuMobile = () => {
   })
 }
 
-const setLenguagesSkillsIcons = () => {
-  const skills = document.querySelector(".skills")
-  skills.classList.add("skills-active")
+const setLenguagesSkillsIcons = async () => {
 
+  const skills = document.querySelector(".skills")
   const skillsWrapper = document.querySelector(".skills-wrapper")
+  const style = document.createElement('style');
+  skills.classList.add("skills-active", "animate__animated", "animate__fadeInUp");
+  skills.style.left="5%"
 
   const lenguages = {
     html: './img/html-5.png',
@@ -514,12 +513,16 @@ const setLenguagesSkillsIcons = () => {
   for (const leng in lenguages) {
     let img = document.createElement("img")
     if(leng  !== "width" && leng !== "height") {
+      img.setAttribute("src", "./img/break.png")
       img.setAttribute("src", lenguages[leng])
       img.style.height =`${lenguages.height}px`
       img.style.width =`${lenguages.width}px`
+      img.classList.add("break")
       skillsWrapper.appendChild(img)
     }
   }
+  hoverLenguageSkillsIcon()
+  document.head.appendChild(style);
 }
 
 const quitLenguagesSkillsIcons = () => {
@@ -531,4 +534,17 @@ const quitLenguagesSkillsIcons = () => {
   }
   
 }
+
+const hoverLenguageSkillsIcon = () => {
+  const skills = document.querySelectorAll(".skills-wrapper  img");
+  skills.forEach((img) => {
+    img.addEventListener('mouseover', (e) => {
+      img.classList.add("animate__animated", "animate__bounce");
+    });
+     img.addEventListener('mouseout', (e) => {
+      img.classList.remove("animate__bounce");
+    });
+  });
+};
+
 

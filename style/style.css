@@ -183,6 +183,7 @@ input[name="search"], input[name="search-proyects"] {
 .active-like {
     color: #1877F2 !important;
 }
+
 .like-comment .hoverComment:hover {
     background-color: #F0F2F5;
 }
@@ -193,6 +194,11 @@ input[name="search"], input[name="search-proyects"] {
     /* align-items: center; */
     gap: 10px;
 }
+
+.active-menu-mobile {
+ display: block;
+}
+
 
 .main {
     max-width: 100%;
@@ -215,9 +221,6 @@ input[name="search"], input[name="search-proyects"] {
     z-index: 1;
 }
 
-.active-menu-mobile {
- display: block;
-}
 
 
 .menu-mobile  li {
