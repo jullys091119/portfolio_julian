@@ -47,12 +47,15 @@ export const changeTabs = () => {
       if(e.target.innerText !== "Trabajos" && e.target.innerText !== "Skills") {
         aboutMe()
         removePublication()
+        changeTextOnPublication(e.target.innerText)
       } else if(e.target.innerText !== "Skills" && e.target.innerText !== "Acerca de") {
         removePublication()
         showWorksOnWall()
+        changeTextOnPublication(e.target.innerText)
       } else if(!isClicked) {
         isClicked = true
         setLenguagesSkillsIcons()
+
       } else  {
         quitLenguagesSkillsIcons()
       }
@@ -467,7 +470,9 @@ export const getData = async (watchingAllComments) => {
 export const openMenu = () => {
   const iconMenu = document.querySelector(".icon-menu");
   const menuMobile = document.querySelector(".menu-mobile")
+ 
   iconMenu.addEventListener("click", e => {
+    console.log(e)
    menuMobile.classList.toggle("active-menu-mobile")
   })
 }
@@ -492,7 +497,6 @@ export const selectMenuMobile = () => {
 }
 
 const setLenguagesSkillsIcons = async () => {
-
   const skills = document.querySelector(".skills")
   const skillsWrapper = document.querySelector(".skills-wrapper")
   const style = document.createElement('style');
@@ -532,7 +536,6 @@ const quitLenguagesSkillsIcons = () => {
   } else {
     skills.classList.add("skills-active")
   }
-  
 }
 
 const hoverLenguageSkillsIcon = () => {
@@ -547,4 +550,12 @@ const hoverLenguageSkillsIcon = () => {
   });
 };
 
-
+const changeTextOnPublication = (txt) => {
+  console.log(txt)
+  const filter = document.querySelector(".filters .filters-title")
+  if(txt === "Trabajos") {
+    filter.innerText = "Publicaciones"
+  } else {
+    filter.innerText = "Acerca de mi"
+  }
+}
