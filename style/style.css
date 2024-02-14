@@ -41,9 +41,8 @@ body,html {
     margin-left: 10px;
 }
 
-.comment-body {
-    width: 100px;
-    max-height: 173px;
+[class^="comment-body-"] {
+     width: 100px;
     max-width: 844px;
     padding: 15px;
     border-radius: 12px;
@@ -54,6 +53,22 @@ body,html {
     font-family: 'lato-regular';
     backdrop-filter: blur(10px);
     background-color: rgba(255, 255, 255, 0.5);
+    background-color: #F0F2F5;
+}
+
+.comment-body {
+    width: 100px;
+    max-width: 844px;
+    padding: 15px;
+    border-radius: 12px;
+    width: 200px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px); 
+    background-color: #F0F2F5;
+    font-family: 'lato-regular';
+    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.5);
+    background-color: #F0F2F5;
 }
 
 .counter-likes {
@@ -187,6 +202,7 @@ input[name="search"], input[name="search-proyects"] {
      background-color: white;
      font-size: 15px;
      font-weight: 900;
+     gap: 10px !important;
 }
 
 .like-comment {
@@ -206,11 +222,13 @@ input[name="search"], input[name="search-proyects"] {
     background-color: #F0F2F5;
 }
 
-.like, .comment {
+
+[class^="like-"] .comment {
+    /* Estilos que deseas aplicar */
     color: gray;
     display: flex;
-    /* align-items: center; */
     gap: 10px;
+    flex-direction: column;
 }
 
 .active-menu-mobile {
@@ -292,24 +310,39 @@ input[name="search"], input[name="search-proyects"] {
   border-radius: 12px;
 }
 
-.showComments {
-    display: flex;
-    flex-direction: column;  
-    overflow-y: scroll;
-    padding: 22px;
-    height: 190px;
-    gap: 20px;
-    scrollbar-width: thin; /* Ancho de la barra de desplazamiento */
-    scrollbar-color: #888 transparent; /* Color de la barra de desplazamiento y su fondo */
-}
-
-.showComments-comments {
+.comments {
     display: flex;
     align-items: center;
     gap: 4px;
     color: #666666;
     font-weight: 600;
     font-size: 14px;
+    margin-left: 23px;
+}
+
+[class^="comment-"] {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #666666;
+    font-weight: 600;
+    font-size: 14px;
+    margin-left: 23px;
+}
+
+[class^="showComments-"] {
+    display: flex;
+    flex-direction: column;  
+    overflow-y: scroll;
+    padding: 22px;
+    height: 190px;
+    gap: 20px;
+    scrollbar-width: thin; 
+    scrollbar-color: #888 transparent
+}
+
+.single-comment {
+  display: flex;
 }
 
 .skills {
@@ -438,6 +471,7 @@ input[name="search"], input[name="search-proyects"] {
 
 .wrapper-date p {
     font-size: 10px;
+    color: #666666
 }
 
 .wrapper-publication-header-name > p {
