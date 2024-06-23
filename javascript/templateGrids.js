@@ -6,6 +6,7 @@ const templateGrids = (
   dateCreation,
   id
 ) => {
+
   return `
     <div class="wrapper-publication" id=${id}>
     

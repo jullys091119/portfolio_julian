@@ -16,6 +16,7 @@ const hiddeIconMoreComment = (showComments, index) => {
   );
   const iconComment = document.querySelector(`.icon-comment-${index}`);
   let watchingAllComments = false;
+
   moreComments.addEventListener("click", async (e) => {
     watchingAllComments = true;
     isOpenFullComments = true;
@@ -38,16 +39,20 @@ const hiddeIconMoreComment = (showComments, index) => {
 };
 
 
-const sendInputComment = (inputComment, showComments, element, index) => {
+const sendInputComment = async (inputComment, containerComments,id,index, longitudComentarios) => {
+
   inputComment.addEventListener("keyup", (event) => {
+    const msj = inputComment.value;
     if (event.key === "Enter") {
-      showComments.style.visibility = "visible";
-      sendComment(inputComment.value, element.id, index); //No se envia hasta que haya un enter
+      containerComments.style.visibility = "visible";
+      sendComment(msj, id, index,longitudComentarios); //No se envia hasta que haya un enter
       inputComment.value = ""; // Limpiar el input después de enviar el comentario
-      showComments.style.display = "flex";
+      containerComments.style.display = "flex";
     }
+    
   });
 }
+
 
 const hiddeInputComment = (showComments, longitudComentarios, inputHidde, comment) => {
   let long = false;
@@ -109,13 +114,13 @@ const changeTabs = () => {
           removePublication();
           aboutMe();
           changeTextOnPublication(e.target.innerText);
-          console.log(isVisible, "en acerca de")
+          // console.log(isVisible, "en acerca de")
         } else if (e.target.innerText === "Trabajos") {
          
           showWorksOnWall();
           removePublication();
           changeTextOnPublication(e.target.innerText);
-          console.log(isVisible, "en trabajo")
+          // console.log(isVisible, "en trabajo")
         } else  if(e.target.innerText === "Skills") {  
           if(!isVisible) {
             isVisible=true
