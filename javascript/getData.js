@@ -10,7 +10,7 @@ import showAllComments from "./showAllComments.js";
 let comentariosLimitados = [];
 const arr = {}
 
-const getData = async (watchingAllComments, index) => {
+const getData = async (watchingAllComments =  undefined, index = undefined) => {
   const q = query(collection(db, "publicacion"));
   const querySnapshot = await getDocs(q);
   let usuarios = [];
@@ -29,7 +29,7 @@ const getData = async (watchingAllComments, index) => {
       apellido: doc.data().apellido,
       imagen: doc.data().imagen,
       imagenPerfil: doc.data().img_perfil,
-      link: doc.data().link,
+      links: doc.data().links,
       comentarios: comentariosLimitados,
       longitudComentarios: commentLong,
       likes: doc.data().likes,
@@ -38,7 +38,9 @@ const getData = async (watchingAllComments, index) => {
     });
   });
   showAllComments(arr,index)
+
   return usuarios;
 };
+
 
 export default getData

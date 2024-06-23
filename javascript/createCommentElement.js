@@ -1,9 +1,7 @@
 let showDatePost = [];
 const createCommentElement = (comentario, index, key, isvisibleComments) => {
-  console.log(key, "key", index);
   const idPublication = document.querySelectorAll(`.wrapper-publication`);
   const id = idPublication[index].getAttribute("id");
-
   const commentContainer = document.createElement("div");
   commentContainer.classList.add("comment");
   // Verifica si `comentario` es un array o un objeto
