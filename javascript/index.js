@@ -12,22 +12,13 @@ import counterLikes from "./CounterLikes.js";
 
 let contenidoMostrado = false;
 let allComments = []; //
-let dateCreation;
-let indexComment = 0
-let commentCounter = 0;
 let gridLong;
-let element = ""
-let currentLikes = ""
 let id = ""
 let longitudComentarios = ""
-let fechaCreacion = ""
-let fechaPost = ""
-let  dataPost = {}
 let template = null
 let data = {}
 
 export const showWorksOnWall = async () => {
-
   const publication = document.querySelector(".publication");
   const gridWorks = document.querySelectorAll(".grid-item");
   const hasLiked = localStorage.getItem("hasLiked");
@@ -41,14 +32,15 @@ export const showWorksOnWall = async () => {
         data[index].longitudComentarios,
         data[index].likes,
         data[index].fechaCreacion,
-        data[index].id
+        data[index].id,
+        data[index].imagenPerfil
+
       );
     return template
   }
 
   gridWorks.forEach(async (el, index) => {
     const settingData  = await settingDataPost(index) // recoge el template
-  
     gridLong = index
     allComments = data[index].comentarios
     longitudComentarios = data[index].longitudComentarios
@@ -70,6 +62,7 @@ export const showWorksOnWall = async () => {
     sendInputComment(inputComment, showComments, id, index, longitudComentarios)
 
   });
+
 };
 
 

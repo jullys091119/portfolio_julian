@@ -4,7 +4,8 @@ const templateGrids = (
   comments,
   currentLikes,
   dateCreation,
-  id
+  id,
+  img
 ) => {
 
   return `
@@ -21,7 +22,7 @@ const templateGrids = (
       </div>
       <div class="picture-wall">
       <a href="${link}">
-          <img src="./img/proyect-${0}.png" alt="">
+          <img src="${img}" alt="">
         </a>
       </div>
       <div class="counter-likes">
