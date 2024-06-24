@@ -25,7 +25,8 @@ const settingLongLikes =async (longitudComentarios,index) => {
 }
 
 
-const sendComment = async (msj, id, index, longitudComentarios,isOpenFullComments) => {
+const sendComment = async (msj, id, index, longitudComentarios) => {
+  console.log(index, "index")
   try {
     await updatingDb(msj,id,longitudComentarios,index)
     console.warn("datos actualizados")
@@ -89,5 +90,7 @@ const settingDatePost = async (post) => {
     showDatePost.push(setDatePost(el.seconds, el.nanoseconds))
   })
 }
+
+
 
 export  {sendComment, settingDatePost}

@@ -6,15 +6,14 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { db } from "./setting.js";
 import showAllComments from "./showAllComments.js";
-
+import aboutMe from "./aboutMe.js";
 let comentariosLimitados = [];
 const arr = {}
-
 const getData = async (watchingAllComments =  undefined, index = undefined) => {
   const q = query(collection(db, "publicacion"));
   const querySnapshot = await getDocs(q);
   let usuarios = [];
-  
+
   querySnapshot.forEach((doc) => {
     const commentLong = doc.data().comentarios.length;
     if (watchingAllComments) {
@@ -28,7 +27,7 @@ const getData = async (watchingAllComments =  undefined, index = undefined) => {
       nombre: doc.data().nombre,
       apellido: doc.data().apellido,
       imagen: doc.data().imagen,
-      imagenPerfil: doc.data().img_perfil,
+      imagenPerfil: doc.data().imgProyecto,
       links: doc.data().links,
       comentarios: comentariosLimitados,
       longitudComentarios: commentLong,
@@ -36,7 +35,9 @@ const getData = async (watchingAllComments =  undefined, index = undefined) => {
       fechaCreacion: doc.data().fechaCreacion,
       fechaPost: doc.data().fechaPost
     });
+    
   });
+  
   showAllComments(arr,index)
   return usuarios;
 };

@@ -1,9 +1,20 @@
-
-const aboutMe = () => {
+import {query,collection,getDocs} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js'
+import { db } from "./setting.js";
+const aboutMe = async () => {
+  const q = query(collection(db, "publicacion"));
+  const querySnapshot = await getDocs(q);
+  const gridItem = document.querySelectorAll(".grid-item img")  
   const works = document.querySelector(".publication");
-   const gridItem = document.querySelectorAll(".grid-item img")
+  querySnapshot.forEach((doc,i) => {
+    for (const key in gridItem ) {
+      if(gridItem && gridItem[key] && gridItem[key].setAttribute) {
+        gridItem[key].setAttribute("src", doc.data().imgProyecto)
+      }
+    }
+  })
+   
+
   
-   gridItem[0].setAttribute("src", `./img/proyect-${0}.png`);
    const wrapperPublication = document.createElement("div")
    wrapperPublication.classList.add('wrapper-publication', 'wrapper-about')
    wrapperPublication.style.backgroundImage = "url(./img/about.png)"
