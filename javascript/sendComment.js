@@ -25,13 +25,15 @@ const settingLongLikes =async (longitudComentarios,index) => {
 }
 
 
-const sendComment = async (msj, id, index, longitudComentarios) => {
+const sendComment = async (msj, id, index, longitudComentarios,isOpenFullComments) => {
   try {
     await updatingDb(msj,id,longitudComentarios,index)
     console.warn("datos actualizados")
   } catch (error) {
     console.error("No se actualizaron los datos")
   }
+  const data = await getData(undefined,index)
+
 }
 
 const updatingDb = async(msj,id,longitudComentarios,index) => {
@@ -45,18 +47,26 @@ const updatingDb = async(msj,id,longitudComentarios,index) => {
   await settingLongLikes(newCommentLenght,index)
 }
 
-const updatingDom =async (msj,index,id) => {
-  newCommentElement = createCommentElement(msj,index,id,true);
-  console.log(newCommentElement, "template comentario creado")
-  const showCommentsContainer = document.querySelector(`.showComments-${index}`);
-  if (showCommentsContainer && newCommentElement) {
-    showCommentsContainer.removeChild(showCommentsContainer.lastChild);
-    showCommentsContainer.appendChild(newCommentElement, showCommentsContainer);
-  }
+const updatingDom =(msj,index,id) => {
+  styleFirsComment()
+  newCommentElement =  createCommentElement(msj,index,id,true);
+    const showCommentsContainer = document.querySelector(`.showComments-${index}`);
+    const lastChild = showCommentsContainer.lastChild;
+    lastChild.classList.add("noComments")
+    if (lastChild && lastChild.classList.contains("noComments")) {
+      showCommentsContainer.removeChild(lastChild);
+    }
+    // Agregar el nuevo comentario al principio
+    showCommentsContainer.prepend(newCommentElement);
+    const firstchild= showCommentsContainer.firstChild
+    firstchild.classList.add("firstcomment")
 };
 
 
-
+const styleFirsComment = ( ) => {
+  const comment = document.querySelector('.single-comment');
+   comment.style.marginTop= "-30px"
+}
 
 
 const setDatePost = (seconds, nanoseconds) => {

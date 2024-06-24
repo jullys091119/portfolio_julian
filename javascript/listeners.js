@@ -45,7 +45,7 @@ const sendInputComment = async (inputComment, containerComments,id,index, longit
     const msj = inputComment.value;
     if (event.key === "Enter") {
       containerComments.style.visibility = "visible";
-      sendComment(msj, id, index,longitudComentarios); //No se envia hasta que haya un enter
+      sendComment(msj, id, index,longitudComentarios,isOpenFullComments); //No se envia hasta que haya un enter
       inputComment.value = ""; // Limpiar el input después de enviar el comentario
       containerComments.style.display = "flex";
     }

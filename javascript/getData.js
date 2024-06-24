@@ -38,7 +38,6 @@ const getData = async (watchingAllComments =  undefined, index = undefined) => {
     });
   });
   showAllComments(arr,index)
-
   return usuarios;
 };
 
