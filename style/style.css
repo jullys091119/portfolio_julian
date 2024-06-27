@@ -186,6 +186,11 @@ img {
   object-fit: cover;
 }
 
+.images-transition {
+    width: 25px;
+    height: 25px;
+    margin: 0 5px;
+}
 input[name="search"], input[name="search-proyects"] {
     background-color: #F0F2F5;
 }
@@ -345,19 +350,13 @@ input[name="search"], input[name="search-proyects"] {
   display: flex;
 }
 
+
 .skills {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 90%;
-    backdrop-filter: blur(10px); /* Efecto de desenfoque */
-    background-color: rgba(255, 255, 255, 0.5); /* Transparencia */
-    display: none;
+    display: inline-block;
 }
 
 .skills-active {
-  display: block
+  display: none
 }
 
 .skills-wrapper {
@@ -522,7 +521,7 @@ input[name="search"], input[name="search-proyects"] {
 }
 .wrapper-imagen-nombre span , h1 {
     font-family: "lato-black";
-    padding-left: 20px;
+ 
 }
 
 .wrapper-imagen-nombre h1 {
@@ -545,7 +544,7 @@ input[name="search"], input[name="search-proyects"] {
     background: white;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     border-radius: 11px;
-    margin: 10px 0;   
+    margin: 22px 11px !important;
 }
 
 .works {
