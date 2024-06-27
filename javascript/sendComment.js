@@ -26,25 +26,26 @@ const settingLongLikes =async (longitudComentarios,index) => {
 
 
 const sendComment = async (msj, id, index, longitudComentarios) => {
+  console.log(msj, id , index, longitudComentarios, "checalo")
   console.log(index, "index")
   try {
     await updatingDb(msj,id,longitudComentarios,index)
     console.warn("datos actualizados")
+    await getData(undefined,index)
   } catch (error) {
     console.error("No se actualizaron los datos")
   }
-  const data = await getData(undefined,index)
 
 }
 
 const updatingDb = async(msj,id,longitudComentarios,index) => {
   let newCommentLenght = longitudComentarios
-  updatingDom(msj,index,id,newCommentLenght)
   const docRef = doc(db, "publicacion", id);
   await updateDoc(docRef, {
     comentarios: arrayUnion(msj),
     longitudComentarios: newCommentLenght
   });
+  updatingDom(msj,index,id,newCommentLenght)
   await settingLongLikes(newCommentLenght,index)
 }
 
