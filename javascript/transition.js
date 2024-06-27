@@ -34,14 +34,15 @@ const imagesTransition =  () => {
 
 const quitLenguagesSkillsIcons = (txt) => {
   const languagesSkills = document.querySelector(".languages-skills");
+   console.log(txt, "txt")
   if (txt === "Skills") {
     languagesSkills.classList.remove("skills-active");
     languagesSkills.classList.add("skills");
     gsap.to(languagesSkills, { x: 10, duration: 3, ease: "power2.out" });
   } else {
+    gsap.to(languagesSkills, { x: -10, duration: 3, ease: "power2.out" });
     languagesSkills.classList.remove("skills");
     languagesSkills.classList.add("skills-active");
-    languagesSkills.classList.remove("animate__bounce");
   }
 };
 

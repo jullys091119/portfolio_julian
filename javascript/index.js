@@ -22,6 +22,7 @@ export const showWorksOnWall = async () => {
   const publication = document.querySelector(".publication");
   const gridWorks = document.querySelectorAll(".grid-item");
   const hasLiked = localStorage.getItem("hasLiked");
+  console.log(hasLiked, "index")
   // Obtener el array de objetos de la colección
   
   
@@ -85,15 +86,15 @@ export const selectMenuMobile = () => {
   menuMobile.addEventListener("click", (e) => {
     const targetText = e.target.innerText.trim();
     if(targetText === "Acerca de") {
+      quitLenguagesSkillsIcons(targetText)
       aboutMe()
       removePublication()
       duplicateDomNodePublication()
-      quitLenguagesSkillsIcons(targetText)
     } else if(targetText === "Trabajos") {
+      quitLenguagesSkillsIcons(targetText)
       showWorksOnWall()
       removePublication()
       duplicateDomNodePublication()
-      quitLenguagesSkillsIcons(targetText)
     } 
     
     if(targetText === "Skills") {
@@ -102,18 +103,3 @@ export const selectMenuMobile = () => {
     
   });
 };
-
-
-// const targetText = e.target.innerText.trim();
-//     const languagesSkills = document.querySelector(".languages-skills");
-//     languagesSkills.classList.remove("skills-active")
-
-//     if (targetText === "Acerca de") {
-//       quitLenguagesSkillsIcons(targetText)
-//       removePublication();
-//       aboutMe();
-//     } else if (targetText === "Trabajos") {
-//       quitLenguagesSkillsIcons(targetText)
-//       removePublication();
-//       showWorksOnWall();
-//     } 
