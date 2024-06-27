@@ -39,7 +39,6 @@ const hiddeIconMoreComment = (showComments, index) => {
 
 
 const sendInputComment = async (inputComment, containerComments,id,index, longitudComentarios) => {
-
   inputComment.addEventListener("keyup", (event) => {
     const msj = inputComment.value;
     if (event.key === "Enter") {
