@@ -1,5 +1,6 @@
 let iconsAdded = false;
-const setLenguagesSkillsIcons = async () => {
+
+const setLenguagesSkillsIcons = async (txt) => {
   const skills = document.querySelector(".skills")
   const skillsWrapper = document.querySelector(".skills-wrapper")
   const style = document.createElement('style');
@@ -30,11 +31,13 @@ const setLenguagesSkillsIcons = async () => {
     iconsAdded = true;
   }
   hoverLenguageSkillsIcon()
+
   document.head.appendChild(style);
 }
 
 const quitLenguagesSkillsIcons = () => {
   const skills = document.querySelector(".skills")
+  console.log(skills)
   if(skills.classList.contains("skills-active")) {
     skills.classList.remove("skills-active")
   } 
@@ -48,9 +51,8 @@ const hoverLenguageSkillsIcon = () => {
       img.classList.add("animate__animated", "animate__bounce");
     });
      img.addEventListener('mouseout', (e) => {
-      img.classList.remove("animate__bounce");
+     
     });
   });
 };
 
-export  {quitLenguagesSkillsIcons, setLenguagesSkillsIcons}

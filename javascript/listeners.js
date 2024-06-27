@@ -2,8 +2,7 @@ import getData from "./getData.js";
 import {sendComment} from "./sendComment.js";
 import aboutMe from "./aboutMe.js";
 import { showWorksOnWall } from "./index.js";
-import { quitLenguagesSkillsIcons,setLenguagesSkillsIcons } from "./lenguageSkills.js";
-
+import {quitLenguagesSkillsIcons} from "./transition.js";
 let isOpenFullComments = false;
 let isVisible = false;
 let isClicked = false
@@ -114,24 +113,28 @@ const changeTabs = () => {
           removePublication();
           aboutMe();
           changeTextOnPublication(e.target.innerText);
+          quitLenguagesSkillsIcons(e.target.innerText)
           // console.log(isVisible, "en acerca de")
         } else if (e.target.innerText === "Trabajos") {
          
           showWorksOnWall();
           removePublication();
           changeTextOnPublication(e.target.innerText);
+          quitLenguagesSkillsIcons(e.target.innerText)
           // console.log(isVisible, "en trabajo")
         } else  if(e.target.innerText === "Skills") {  
           if(!isVisible) {
             isVisible=true
-            setLenguagesSkillsIcons()
+            quitLenguagesSkillsIcons(e.target.innerText)
+
           }
         } 
       
         if(e.target.innerText !== "Skills") {  
           if(isVisible == false) {
             isVisible= false
-           quitLenguagesSkillsIcons()
+          //  quitLenguagesSkillsIcons(isVisible)
+          //  imagesTransition()
           }
         } 
       
@@ -142,6 +145,7 @@ const changeTabs = () => {
 
         // Agregar la clase 'menu-list-tabs-active' solo al tab clicado
         e.target.classList.add("menu-list-tabs-active");
+
 
         isVisible = false
     });

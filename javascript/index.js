@@ -6,9 +6,8 @@ import aboutMe from "./aboutMe.js";
 import { sendInputComment, hiddeIconMoreComment, hiddeInputComment } from "./listeners.js";
 import getData from "./getData.js";
 import showAllComments from "./showAllComments.js";
-// import { settingDatePost } from "./sendComment.js";
-import { changeTabs } from "./listeners.js";
 import counterLikes from "./CounterLikes.js";
+import { imagesTransition,quitLenguagesSkillsIcons } from "./transition.js";
 
 let contenidoMostrado = false;
 let allComments = []; //
@@ -17,12 +16,15 @@ let id = ""
 let longitudComentarios = ""
 let template = null
 let data = {}
+let isClicked = false
 
 export const showWorksOnWall = async () => {
   const publication = document.querySelector(".publication");
   const gridWorks = document.querySelectorAll(".grid-item");
   const hasLiked = localStorage.getItem("hasLiked");
   // Obtener el array de objetos de la colección
+  
+  
 
   const settingDataPost = async (index = "") => {
       data = await getData();
@@ -65,24 +67,53 @@ export const showWorksOnWall = async () => {
 
 };
 
+export const removePublication = () => {
+  const removeWrapper = document.querySelectorAll(".wrapper-publication")[0]
+  removeWrapper.remove()
+}
 
-// Llamar a las funciones necesarias
+const duplicateDomNodePublication = () => {
+  const removeWrapper = document.querySelectorAll(".wrapper-publication")[0]
+  if(removeWrapper !== undefined) {
+    removeWrapper.remove()
+  }
+}
+
 
 export const selectMenuMobile = () => {
   const menuMobile = document.querySelector(".menu-mobile");
-  menuMobile.addEventListener("click", e => {
-    if (e.target.innerText !== "Trabajos" && e.target.innerText !== "Skills") {
+  menuMobile.addEventListener("click", (e) => {
+    const targetText = e.target.innerText.trim();
+    if(targetText === "Acerca de") {
       aboutMe()
       removePublication()
-    } else if (e.target.innerText !== "Skills" && e.target.innerText !== "Acerca de") {
-      removePublication()
+      duplicateDomNodePublication()
+      quitLenguagesSkillsIcons(targetText)
+    } else if(targetText === "Trabajos") {
       showWorksOnWall()
-    } else if (!isClicked) {
-      isClicked = true
-      setLenguagesSkillsIcons()
-    } else {
-      quitLenguagesSkillsIcons()
+      removePublication()
+      duplicateDomNodePublication()
+      quitLenguagesSkillsIcons(targetText)
+    } 
+    
+    if(targetText === "Skills") {
+      quitLenguagesSkillsIcons(targetText)
     }
-  })
-}
+    
+  });
+};
 
+
+// const targetText = e.target.innerText.trim();
+//     const languagesSkills = document.querySelector(".languages-skills");
+//     languagesSkills.classList.remove("skills-active")
+
+//     if (targetText === "Acerca de") {
+//       quitLenguagesSkillsIcons(targetText)
+//       removePublication();
+//       aboutMe();
+//     } else if (targetText === "Trabajos") {
+//       quitLenguagesSkillsIcons(targetText)
+//       removePublication();
+//       showWorksOnWall();
+//     } 
