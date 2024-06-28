@@ -13,14 +13,12 @@ const hiddeIconMoreComment = (showComments, index) => {
   const moreComments = document.querySelector(
     `.watching-more-comments-${index}`
   );
-  const iconComment = document.querySelector(`.icon-comment-${index}`);
   let watchingAllComments = false;
 
   moreComments.addEventListener("click", async (e) => {
     watchingAllComments = true;
     isOpenFullComments = true;
     moreComments.style.display = "none";
-    iconComment.style.display = "none";
     showComments.style.paddingTop = "10px";
     await getData(watchingAllComments, index);
     removeFirstComment();

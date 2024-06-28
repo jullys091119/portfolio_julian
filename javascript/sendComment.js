@@ -51,35 +51,17 @@ const updatingDb = async (msj, id, longitudComentarios, index) => {
 const updatingDom = async (msj, index, id) => {
   newCommentElement = createCommentElement(msj, index, id, true);
   const showCommentsContainer = document.querySelector(`.showComments-${index}`);
+
+  showCommentsContainer.appendChild(newCommentElement);
   
-  if (!showCommentsContainer) {
-    console.error(`No se encontró el contenedor .showComments-${index}`);
-    return;
+  const comments = document.querySelectorAll(".comment")
+  
+  if(comments.length !== 1) {
+    comments[0].remove()
   }
-  
-  const lastChild = showCommentsContainer.lastChild;
-  if (lastChild && lastChild.classList && lastChild.classList.contains("noComments")) {
-    showCommentsContainer.removeChild(lastChild);
-  }
-  
-  showCommentsContainer.prepend(newCommentElement);
-  const firstChild = showCommentsContainer.firstChild;
-  if (firstChild) {
-    firstChild.classList.add("firstcomment");
-  }
-  
-  styleFirstComment();
+
 };
 
-
-const styleFirstComment = () => {
-  const firstComment = document.querySelector('.firstcomment');
-  if (firstComment) {
-    firstComment.style.marginTop = "-30px";
-  } else {
-    console.error('Elemento .firstcomment no encontrado.');
-  }
-};
 
 const setDatePost = (seconds, nanoseconds) => {
   const options = {
