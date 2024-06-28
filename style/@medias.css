@@ -129,6 +129,14 @@
         gap: 20px;
     
     }
+    .wrapper-imagen-nombre h1 {
+        font-size: 30px;
+    }
+    .languages-skills {
+        margin-top: 30px;
+        margin-right: 60px;
+    }
+    
 }
 
 @media (min-width: 370px) and (max-width: 480px) {
@@ -139,7 +147,8 @@
     .wrapper-about {
      line-height: 30px;
     }
-  }
+   
+}
 
 @media (min-width: 481px) and (max-width: 675px) {
     .search-proyects-input input {

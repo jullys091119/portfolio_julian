@@ -57,7 +57,6 @@ const createCommentElement = (comentario, index, key, isvisibleComments) => {
 
       const author = document.createElement("div");
       author.classList.add("comment-author");
-      author.textContent = "Anonim@";
 
       const body = document.createElement("div");
       body.classList.add(`comment-body-${index}`);

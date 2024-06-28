@@ -45,7 +45,6 @@ const templateGrids = (
           </div>
           <div class="showComments-${index}">
           <div class="comments">
-          <i class="fa-light fa-arrow-turn-down-right icon-comment-${index}"></i>
           <p class="watching-more-comments-${index}">Ver mas comentarios</p>
           </div>
       </div>
